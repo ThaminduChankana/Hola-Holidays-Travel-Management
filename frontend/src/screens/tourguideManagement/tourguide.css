@@ -1,0 +1,22 @@
+.GuideBackgroundView {
+	background: url("https://res.cloudinary.com/dfmnpw0yp/image/upload/v1684405205/Hola%20Holidays/assets/s50rbutjauxeaqpc0ckn.jpg");
+	background-position: center;
+	background-size: cover;
+}
+
+.GuideBackgroundUpdate {
+	background: url("https://res.cloudinary.com/dfmnpw0yp/image/upload/v1683267535/Hola%20Holidays/assets/ns0ciykljezm2mr6n8fw.jpg");
+	background-position: center;
+	background-size: cover;
+}
+.GuardBackgroundCreate {
+	background: url("https://res.cloudinary.com/dfmnpw0yp/image/upload/v1683267532/Hola%20Holidays/assets/el5saqywbwmfave4l8to.jpg");
+	background-position: center;
+	background-size: cover;
+}
+
+.GuideCustomerBackgroundView {
+	background: url("https://res.cloudinary.com/dfmnpw0yp/image/upload/v1684404706/Hola%20Holidays/assets/nzsaukpjexitdabym9qb.jpg");
+	background-position: center;
+	background-size: cover;
+}

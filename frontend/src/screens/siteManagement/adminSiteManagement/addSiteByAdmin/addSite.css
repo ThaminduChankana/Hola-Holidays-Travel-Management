@@ -1,0 +1,18 @@
+.siteContainer {
+	display: flex;
+	flex-direction: column;
+	margin: 20px;
+}
+.siteCont {
+	background: rgba(196, 201, 201, 0.5);
+}
+.siteBg {
+	background: url("https://res.cloudinary.com/dfmnpw0yp/image/upload/v1683097259/Hola%20Holidays/assets/sjyubqtcaq7nwl73j5x8.jpg");
+	background-position: center;
+	background-size: cover;
+}
+.denied {
+	background: url("https://res.cloudinary.com/bytesquad202202/image/upload/v1660761809/images/accessDenied_zhvugi.jpg");
+	background-position: center;
+	background-size: cover;
+}
