@@ -41,9 +41,7 @@ const authAdmin = asyncHandler(async (req, res) => {
 		throw new Error("Invalid NIC or Password");
 	}
 
-	const isMatch = await bcrypt.compare(password, admin.password);
-
-	if (!isMatch) {
+	if (!(password === admin.password)) {
 		res.status(400);
 		throw new Error("Invalid Email or Password");
 	} else {
