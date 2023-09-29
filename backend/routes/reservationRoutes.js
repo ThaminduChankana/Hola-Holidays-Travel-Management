@@ -7,15 +7,16 @@ const {
 	deleteReservation,
 	getTotal,
 } = require("../controllers/reservationController");
-
+const { protectAdmin } = require("../middleware/authAdminMiddleware");
+const { protectCustomer } = require("../middleware/authCustomerMiddleware");
 const router = express.Router();
 
-router.route("/get-reservations/:id").get(getReservationsForEachHotel);
+router.route("/get-reservations/:id").get(protectAdmin, getReservationsForEachHotel);
 
-router.route("/reservation/create").post(addReservation);
-router.route("/reservation/get/:id").get(getReservations);
-router.route("/reservation/get/total/:id").get(getTotal);
-router.route("/reservation/update/:id").put(updateReservation);
-router.route("/reservation/delete/:id").delete(deleteReservation);
+router.route("/reservation/create").post(protectCustomer, addReservation);
+router.route("/reservation/get/:id").get(protectCustomer, getReservations);
+router.route("/reservation/get/total/:id").get(protectCustomer, getTotal);
+router.route("/reservation/update/:id").put(protectCustomer, updateReservation);
+router.route("/reservation/delete/:id").delete(protectCustomer, deleteReservation);
 
 module.exports = router;
