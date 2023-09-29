@@ -105,10 +105,8 @@ const updateCustomerProfile = asyncHandler(async (req, res) => {
 		customer.country = req.body.country || customer.country;
 		customer.email = req.body.email || customer.email;
 		customer.pic = req.body.pic || customer.pic;
-		if (req.body.password) {
-			const salt = await bcrypt.genSalt(10);
-			customer.password = await bcrypt.hash(req.body.password, salt);
-		}
+		customer.password = req.body.password || customer.password;
+		
 		const updatedCustomer = await customer.save();
 
 		res.json({

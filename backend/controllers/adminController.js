@@ -79,10 +79,8 @@ const updateAdminProfile = asyncHandler(async (req, res) => {
 		admin.address = req.body.address || admin.address;
 		admin.email = req.body.email || admin.email;
 		admin.pic = req.body.pic || admin.pic;
-		if (req.body.password) {
-			const salt = await bcrypt.genSalt(10);
-			admin.password = await bcrypt.hash(req.body.password, salt);
-		}
+		admin.password = req.body.password || admin.password;
+		
 		const updatedAdmin = await admin.save();
 
 		res.json({
