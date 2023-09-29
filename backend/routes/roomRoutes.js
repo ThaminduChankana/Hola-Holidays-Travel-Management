@@ -7,13 +7,13 @@ const {
 	deleteReservation,
 	getTotal,
 } = require("../controllers/reservationController");
-
+const { protectAdmin } = require("../middleware/authAdminMiddleware");
 const router = express.Router();
 
-router.route("/room/create").post(createRoom);
-router.route("/get-rooms/:id").get(getRooms);
-router.route("/room/:id").get(getRoomById).put(updateRoom);
-router.route("/room/delete/:id").delete(deleteRoom);
+router.route("/room/create").post(protectAdmin, createRoom);
+router.route("/get-rooms/:id").get(protectAdmin, getRooms);
+router.route("/room/:id").get(protectAdmin, getRoomById).put(protectAdmin, updateRoom);
+router.route("/room/delete/:id").delete(protectAdmin, deleteRoom);
 
 router.route("/rooms/:id").get(getRooms);
 
