@@ -1,5 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Admin = require("../models/adminModel");
+const generateToken = require("../utils/generateToken");
+const bcrypt = require("bcryptjs");
 
 // register user as a admin
 const registerAdmin = asyncHandler(async (req, res) => {
@@ -20,10 +22,23 @@ const registerAdmin = asyncHandler(async (req, res) => {
 		pic,
 	});
 
-	const addedAdmin =await admin.save();
+	const salt = await bcrypt.genSalt(10);
+
+	admin.password = await bcrypt.hash(password, salt);
+
+	await admin.save();
 
 	if (admin) {
-		res.status(201).json(addedAdmin);
+		res.status(201).json({
+			_id: admin._id,
+			name: admin.name,
+			isAdmin: admin.isAdmin,
+			telephone: admin.telephone,
+			address: admin.address,
+			email: admin.email,
+			pic: admin.pic,
+			token: generateToken(admin._id),
+		});
 	} else {
 		res.status(400);
 		throw new Error("Admin Registration Failed !");
@@ -41,7 +56,9 @@ const authAdmin = asyncHandler(async (req, res) => {
 		throw new Error("Invalid NIC or Password");
 	}
 
-	if (!(password === admin.password)) {
+	const isMatch = await bcrypt.compare(password, admin.password);
+
+	if (!isMatch) {
 		res.status(400);
 		throw new Error("Invalid Email or Password");
 	} else {
@@ -53,6 +70,7 @@ const authAdmin = asyncHandler(async (req, res) => {
 			email: admin.email,
 			password: admin.password,
 			pic: admin.pic,
+			token: generateToken(admin._id),
 		});
 	}
 });
@@ -79,8 +97,10 @@ const updateAdminProfile = asyncHandler(async (req, res) => {
 		admin.address = req.body.address || admin.address;
 		admin.email = req.body.email || admin.email;
 		admin.pic = req.body.pic || admin.pic;
-		admin.password = req.body.password || admin.password;
-		
+		if (req.body.password) {
+			const salt = await bcrypt.genSalt(10);
+			admin.password = await bcrypt.hash(req.body.password, salt);
+		}
 		const updatedAdmin = await admin.save();
 
 		res.json({
@@ -91,6 +111,7 @@ const updateAdminProfile = asyncHandler(async (req, res) => {
 			address: updatedAdmin.address,
 			email: updatedAdmin.email,
 			pic: updatedAdmin.pic,
+			token: generateToken(updatedAdmin._id),
 		});
 	} else {
 		res.status(404);
