@@ -29,7 +29,13 @@ export const listReservation = () => async (dispatch, getState) => {
 			customer_Login: { customerInfo },
 		} = getState();
 
-		const { data } = await axios.get(`${API_ENDPOINT}/reservations/reservation/get/${customerInfo._id}`);
+		const config = {
+			headers: {
+				Authorization: `Bearer ${customerInfo.token}`,
+			},
+		};
+
+		const { data } = await axios.get(`${API_ENDPOINT}/reservations/reservation/get/${customerInfo._id}`, config);
 
 		dispatch({
 			type: RESERVATION_LIST_SUCCESS,
@@ -50,7 +56,17 @@ export const hotelListReservation = (id) => async (dispatch, getState) => {
 			type: ADMIN_RESERVATION_LIST_REQUEST,
 		});
 
-		const { data } = await axios.get(`${API_ENDPOINT}/reservations/get-reservations/${id}`);
+		const {
+			admin_Login: { adminInfo },
+		} = getState();
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${adminInfo.token}`,
+			},
+		};
+
+		const { data } = await axios.get(`${API_ENDPOINT}/reservations/get-reservations/${id}`, config);
 
 		dispatch({
 			type: ADMIN_RESERVATION_LIST_SUCCESS,
@@ -72,6 +88,10 @@ export const createReservationAction =
 				type: RESERVATION_CREATE_REQUEST,
 			});
 
+			const {
+				customer_Login: { customerInfo },
+			} = getState();
+
 			const date1 = new Date(checkInDate);
 			const date2 = new Date(checkOutDate);
 
@@ -79,17 +99,26 @@ export const createReservationAction =
 			const noOfDates = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
 
 			const noOfRooms = 1;
+			const config = {
+				headers: {
+					Authorization: `Bearer ${customerInfo.token}`,
+				},
+			};
 
-			const { data } = await axios.post(`${API_ENDPOINT}/reservations/reservation/create`, {
-				customer,
-				customerName,
-				customerEmail,
-				room,
-				checkInDate,
-				checkOutDate,
-				noOfDates,
-				noOfRooms,
-			});
+			const { data } = await axios.post(
+				`${API_ENDPOINT}/reservations/reservation/create`,
+				{
+					customer,
+					customerName,
+					customerEmail,
+					room,
+					checkInDate,
+					checkOutDate,
+					noOfDates,
+					noOfRooms,
+				},
+				config
+			);
 
 			dispatch({
 				type: RESERVATION_CREATE_SUCCESS,
@@ -117,9 +146,18 @@ export const updateReservationAction = (id, rooms) => async (dispatch, getState)
 			type: RESERVATION_UPDATE_REQUEST,
 		});
 
+		const {
+			customer_Login: { customerInfo },
+		} = getState();
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${customerInfo.token}`,
+			},
+		};
 		const noOfRooms = rooms;
 
-		const { data } = await axios.put(`${API_ENDPOINT}/reservations/reservation/update/${id}`, { noOfRooms });
+		const { data } = await axios.put(`${API_ENDPOINT}/reservations/reservation/update/${id}`, { noOfRooms }, config);
 
 		dispatch({
 			type: RESERVATION_UPDATE_SUCCESS,
@@ -147,7 +185,17 @@ export const deleteReservationAction = (id) => async (dispatch, getState) => {
 			type: RESERVATION_DELETE_REQUEST,
 		});
 
-		const { data } = await axios.delete(`${API_ENDPOINT}/reservations/reservation/delete/${id}`);
+		const {
+			customer_Login: { customerInfo },
+		} = getState();
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${customerInfo.token}`,
+			},
+		};
+
+		const { data } = await axios.delete(`${API_ENDPOINT}/reservations/reservation/delete/${id}`, config);
 
 		dispatch({
 			type: RESERVATION_DELETE_SUCCESS,

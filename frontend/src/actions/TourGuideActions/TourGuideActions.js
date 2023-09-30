@@ -19,22 +19,45 @@ import axios from "axios";
 import swal from "sweetalert";
 import { API_ENDPOINT } from "../../config";
 
+export function authHeader() {
+	let admin = JSON.parse(localStorage.getItem("adminInfo"));
+
+	if (admin && admin.token) {
+		return { Authorization: `Bearer ${admin.token}` };
+	} else {
+		return {};
+	}
+}
+
 export const GuideAddAction =
 	(name, gender, language, location, description, fee, phoneNumber) => async (dispatch, getState) => {
 		try {
 			dispatch({
 				type: TOUR_GUIDE_ADD_REQUEST,
 			});
+			const {
+				admin_Login: { adminInfo },
+			} = getState();
 
-			const { data } = await axios.post(`${API_ENDPOINT}/guide/admin/add`, {
-				name,
-				gender,
-				language,
-				location,
-				description,
-				fee,
-				phoneNumber,
-			});
+			const config = {
+				headers: {
+					Authorization: `Bearer ${adminInfo.token}`,
+				},
+			};
+
+			const { data } = await axios.post(
+				`${API_ENDPOINT}/guide/admin/add`,
+				{
+					name,
+					gender,
+					language,
+					location,
+					description,
+					fee,
+					phoneNumber,
+				},
+				config
+			);
 
 			swal({
 				title: "Success !!!",
@@ -69,7 +92,16 @@ export const GuideListAction = () => async (dispatch, getState) => {
 			type: TOUR_GUIDE_VIEW_REQUEST,
 		});
 
-		const { data } = await axios.get(`${API_ENDPOINT}/guide/admin/get`);
+		const {
+			admin_Login: { adminInfo },
+		} = getState();
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${adminInfo.token}`,
+			},
+		};
+		const { data } = await axios.get(`${API_ENDPOINT}/guide/admin/get`, config);
 
 		dispatch({
 			type: TOUR_GUIDE_VIEW_SUCCESS,
@@ -112,15 +144,28 @@ export const GuideUpdateAction =
 				type: TOUR_GUIDE_UPDATE_REQUEST,
 			});
 
-			const { data } = await axios.put(`${API_ENDPOINT}/guide/admin/get/${id}`, {
-				name,
-				gender,
-				language,
-				location,
-				description,
-				fee,
-				phoneNumber,
-			});
+			const {
+				admin_Login: { adminInfo },
+			} = getState();
+
+			const config = {
+				headers: {
+					Authorization: `Bearer ${adminInfo.token}`,
+				},
+			};
+			const { data } = await axios.put(
+				`${API_ENDPOINT}/guide/admin/get/${id}`,
+				{
+					name,
+					gender,
+					language,
+					location,
+					description,
+					fee,
+					phoneNumber,
+				},
+				config
+			);
 			dispatch({
 				type: TOUR_GUIDE_UPDATE_SUCCESS,
 				payload: data,
@@ -147,7 +192,17 @@ export const GuideDeleteAction = (id) => async (dispatch, getState) => {
 			type: TOUR_GUIDE_DELETE_REQUEST,
 		});
 
-		const { data } = await axios.delete(`${API_ENDPOINT}/guide/admin/get/${id}`);
+		const {
+			admin_Login: { adminInfo },
+		} = getState();
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${adminInfo.token}`,
+			},
+		};
+
+		const { data } = await axios.delete(`${API_ENDPOINT}/guide/admin/get/${id}`, config);
 
 		dispatch({
 			type: TOUR_GUIDE_DELETE_SUCCESS,

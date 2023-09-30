@@ -17,7 +17,9 @@ const CustomerLogin = ({ history }) => {
 	const { loading, error, customerInfo, success } = customer_Login;
 
 	useEffect(() => {
-		window.history.pushState({}, "", "/customer");
+		if (customerInfo) {
+			window.history.pushState({}, "", "/customer");
+		}
 	}, [history, customerInfo]);
 
 	const submitHandler = async (e) => {

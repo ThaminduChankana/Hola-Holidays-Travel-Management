@@ -22,6 +22,16 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { API_ENDPOINT } from "../../config";
 
+export function authHeaderForAdmin() {
+	let admin = JSON.parse(localStorage.getItem("adminInfo"));
+
+	if (admin && admin.token) {
+		return { Authorization: `Bearer ${admin.token}` };
+	} else {
+		return {};
+	}
+}
+
 export const sitesListForCustomer = () => async (dispatch, getState) => {
 	try {
 		dispatch({
@@ -49,7 +59,17 @@ export const sitesListForAdmin = () => async (dispatch, getState) => {
 			type: SITES_LIST_FOR_ADMIN_REQUEST,
 		});
 
-		const { data } = await axios.get(`${API_ENDPOINT}/sites/admin/get`);
+		const {
+			admin_Login: { adminInfo },
+		} = getState();
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${adminInfo.token}`,
+			},
+		};
+
+		const { data } = await axios.get(`${API_ENDPOINT}/sites/admin/get`, config);
 
 		dispatch({
 			type: SITES_LIST_FOR_ADMIN_SUCCESS,
@@ -99,25 +119,40 @@ export const createSite =
 		specialInstructions,
 		moreInfoURL
 	) =>
-	async (dispatch) => {
+	async (dispatch, getState) => {
 		try {
 			dispatch({
 				type: SITES_CREATE_REQUEST,
 			});
 
-			const { data } = await axios.post(`${API_ENDPOINT}/sites/admin/add`, {
-				siteName,
-				country,
-				province,
-				siteLocation,
-				postalCode,
-				picURL,
-				description,
-				recommendations,
-				specialEvents,
-				specialInstructions,
-				moreInfoURL,
-			});
+			const {
+				admin_Login: { adminInfo },
+			} = getState();
+
+			const config = {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${adminInfo.token}`,
+				},
+			};
+
+			const { data } = await axios.post(
+				`${API_ENDPOINT}/sites/admin/add`,
+				{
+					siteName,
+					country,
+					province,
+					siteLocation,
+					postalCode,
+					picURL,
+					description,
+					recommendations,
+					specialEvents,
+					specialInstructions,
+					moreInfoURL,
+				},
+				config
+			);
 
 			dispatch({
 				type: SITES_CREATE_SUCCESS,
@@ -159,19 +194,34 @@ export const updateSiteByAdmin =
 				type: SITES_UPDATE_BY_ADMIN_REQUEST,
 			});
 
-			const { data } = await axios.put(`${API_ENDPOINT}/sites/admin/get/${id}`, {
-				siteName,
-				country,
-				province,
-				siteLocation,
-				postalCode,
-				picURL,
-				description,
-				recommendations,
-				specialEvents,
-				specialInstructions,
-				moreInfoURL,
-			});
+			const {
+				admin_Login: { adminInfo },
+			} = getState();
+
+			const config = {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${adminInfo.token}`,
+				},
+			};
+
+			const { data } = await axios.put(
+				`${API_ENDPOINT}/sites/admin/get/${id}`,
+				{
+					siteName,
+					country,
+					province,
+					siteLocation,
+					postalCode,
+					picURL,
+					description,
+					recommendations,
+					specialEvents,
+					specialInstructions,
+					moreInfoURL,
+				},
+				config
+			);
 
 			dispatch({
 				type: SITES_UPDATE_BY_ADMIN_SUCCESS,
@@ -192,7 +242,17 @@ export const deleteSiteByAdmin = (id) => async (dispatch, getState) => {
 			type: SITES_DELETE_BY_ADMIN_REQUEST,
 		});
 
-		const { data } = await axios.delete(`${API_ENDPOINT}/sites/admin/get/${id}`);
+		const {
+			admin_Login: { adminInfo },
+		} = getState();
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${adminInfo.token}`,
+			},
+		};
+
+		const { data } = await axios.delete(`${API_ENDPOINT}/sites/admin/get/${id}`, config);
 
 		dispatch({
 			type: SITES_DELETE_BY_ADMIN_SUCCESS,
