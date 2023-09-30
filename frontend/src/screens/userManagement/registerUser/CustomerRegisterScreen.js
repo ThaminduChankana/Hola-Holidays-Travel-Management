@@ -9,6 +9,8 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { CUSTOMER_REGISTER_AFTER_SUCCESS } from "../../../constants/userManagementConstants/customerConstants";
 import "./RegisterScreen.css";
 
+import DOMPurify from "dompurify";
+
 function CustomerRegisterScreen() {
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
@@ -22,6 +24,16 @@ function CustomerRegisterScreen() {
 	const [confirmpassword, setConfirmPassword] = useState("");
 	const [message, setMessage] = useState(null);
 	const [picMessage, setPicMessage] = useState(null);
+
+	const sanitizedFirstName = DOMPurify.sanitize(firstName);
+	const sanitizedLastName = DOMPurify.sanitize(lastName);
+	const sanitizedAddress = DOMPurify.sanitize(address);
+	const sanitizedTelephone = DOMPurify.sanitize(telephone);
+	const sanitizedGender = DOMPurify.sanitize(gender);
+	const sanitizedCountry = DOMPurify.sanitize(country);
+	const sanitizedEmail = DOMPurify.sanitize(email);
+	const sanitizedPassword = DOMPurify.sanitize(password);
+	const sanitizedConfirmPassword = DOMPurify.sanitize(confirmpassword);
 
 	const dispatch = useDispatch();
 
@@ -60,11 +72,34 @@ function CustomerRegisterScreen() {
 	const submitHandler = async (e) => {
 		e.preventDefault();
 
-		if (!firstName || !lastName || !telephone || !address || !gender || !country || !email || !password || !pic) return;
-		if (password !== confirmpassword) {
+		if (
+			!sanitizedFirstName ||
+			!sanitizedLastName ||
+			!sanitizedLastName ||
+			!sanitizedAddress ||
+			!sanitizedGender ||
+			!sanitizedCountry ||
+			!sanitizedEmail ||
+			!sanitizedPassword ||
+			!pic
+		)
+			return;
+		if (sanitizedPassword !== sanitizedConfirmPassword) {
 			setMessage("Passwords do not match");
 		} else {
-			dispatch(await customerRegister(firstName, lastName, telephone, address, gender, country, email, password, pic));
+			dispatch(
+				await customerRegister(
+					sanitizedFirstName,
+					sanitizedLastName,
+					sanitizedTelephone,
+					sanitizedAddress,
+					sanitizedGender,
+					sanitizedCountry,
+					sanitizedEmail,
+					sanitizedPassword,
+					pic
+				)
+			);
 			await dispatch({ type: CUSTOMER_REGISTER_AFTER_SUCCESS, payload: null });
 			resetHandler();
 		}
@@ -133,7 +168,7 @@ function CustomerRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>First Name</Form.Label>
 										<Form.Control
 											type="name"
-											value={firstName}
+											value={sanitizedFirstName}
 											placeholder="Enter your first name"
 											onChange={(e) => setFirstName(e.target.value)}
 											required
@@ -144,7 +179,7 @@ function CustomerRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Last Name</Form.Label>
 										<Form.Control
 											type="name"
-											value={lastName}
+											value={sanitizedLastName}
 											placeholder="Enter your last name"
 											onChange={(e) => setLastName(e.target.value)}
 											required
@@ -155,7 +190,7 @@ function CustomerRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Telephone</Form.Label>
 										<Form.Control
 											type="text"
-											value={telephone}
+											value={sanitizedTelephone}
 											placeholder="Enter Telephone Number With Country Code"
 											onChange={(e) => setTelephone(e.target.value)}
 											required
@@ -172,7 +207,7 @@ function CustomerRegisterScreen() {
 												padding: "5px",
 												border: "none",
 											}}
-											value={address}
+											value={sanitizedAddress}
 											onChange={(e) => setAddress(e.target.value)}
 											placeholder="Enter your address"
 											required
@@ -187,13 +222,13 @@ function CustomerRegisterScreen() {
 										<select
 											className="form-control"
 											id="customerGender"
-											value={gender}
+											value={sanitizedGender}
 											onChange={(e) => setGender(e.target.value)}
 											required
 										>
 											<option>Select Gender</option>
-											<option value={gender.Male}>Male</option>
-											<option value={gender.Female}>Female</option>
+											<option value={sanitizedGender.Male}>Male</option>
+											<option value={sanitizedGender.Female}>Female</option>
 										</select>
 									</div>
 									<br></br>
@@ -201,7 +236,7 @@ function CustomerRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Country</Form.Label>
 										<Form.Control
 											type="textArea"
-											value={country}
+											value={sanitizedCountry}
 											placeholder="Enter your home country"
 											onChange={(e) => setCountry(e.target.value)}
 											required
@@ -212,7 +247,7 @@ function CustomerRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Email</Form.Label>
 										<Form.Control
 											type="email"
-											value={email}
+											value={sanitizedEmail}
 											placeholder="Enter  your email address"
 											onChange={(e) => setEmail(e.target.value)}
 											required
@@ -223,7 +258,7 @@ function CustomerRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Password</Form.Label>
 										<Form.Control
 											type="password"
-											value={password}
+											value={sanitizedPassword}
 											placeholder="Password"
 											onChange={(e) => setPassword(e.target.value)}
 											required
@@ -234,7 +269,7 @@ function CustomerRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Confirm Password</Form.Label>
 										<Form.Control
 											type="password"
-											value={confirmpassword}
+											value={sanitizedConfirmPassword}
 											placeholder="Confirm Password"
 											onChange={(e) => setConfirmPassword(e.target.value)}
 											required

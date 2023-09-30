@@ -9,6 +9,8 @@ import { useHistory } from "react-router-dom";
 import { HOTEL_CREATE_ADMIN_AFTER_SUCCESS } from "../../../constants/hotelManagementConstants/hotelConstant";
 import "./hotelManagement.css";
 
+import DOMPurify from "dompurify";
+
 const CreateHotel = () => {
 	const [hotelName, setHotelName] = useState("");
 	const [address, setAddress] = useState("");
@@ -18,6 +20,13 @@ const CreateHotel = () => {
 	const [rules, setRules] = useState("");
 	const [pic, setPic] = useState("");
 	const [picMessage, setPicMessage] = useState(null);
+
+	const sanitizedHotelName = DOMPurify.sanitize(hotelName);
+	const sanitizedAddress = DOMPurify.sanitize(address);
+	const sanitizedLocation = DOMPurify.sanitize(location);
+	const sanitizedDescription = DOMPurify.sanitize(description);
+	const sanitizedFacilities = DOMPurify.sanitize(facilities);
+	const sanitizedRules = DOMPurify.sanitize(rules);
 
 	const dispatch = useDispatch();
 	const admin_Login = useSelector((state) => state.admin_Login);
@@ -79,7 +88,17 @@ const CreateHotel = () => {
 	const submitHandler = (e) => {
 		e.preventDefault();
 
-		dispatch(createHotelAction(hotelName, address, location, description, facilities, rules, pic));
+		dispatch(
+			createHotelAction(
+				sanitizedHotelName,
+				sanitizedAddress,
+				sanitizedLocation,
+				sanitizedDescription,
+				sanitizedFacilities,
+				sanitizedRules,
+				pic
+			)
+		);
 		setTimeout(function () {
 			history.push("/hotels-admin-view");
 		}, 2000);
@@ -139,7 +158,7 @@ const CreateHotel = () => {
 								<Form.Group controlId="nic">
 									<Form.Control
 										type="name"
-										value={hotelName}
+										value={sanitizedHotelName}
 										placeholder="Hotel Name"
 										onChange={(e) => setHotelName(e.target.value)}
 										required
@@ -162,7 +181,7 @@ const CreateHotel = () => {
 										placeholder="Address"
 										type="address"
 										required
-										value={address}
+										value={sanitizedAddress}
 										onChange={(e) => setAddress(e.target.value)}
 									/>
 								</Form.Group>
@@ -177,7 +196,7 @@ const CreateHotel = () => {
 										placeholder="Location"
 										type="location"
 										required
-										value={location}
+										value={sanitizedLocation}
 										onChange={(e) => setLocation(e.target.value)}
 									/>
 								</Form.Group>
@@ -191,7 +210,7 @@ const CreateHotel = () => {
 										}}
 										as="textarea"
 										type="description"
-										value={description}
+										value={sanitizedDescription}
 										placeholder="Description"
 										onChange={(e) => setDescription(e.target.value)}
 										required
@@ -207,7 +226,7 @@ const CreateHotel = () => {
 										}}
 										as="textarea"
 										type="facilities"
-										value={facilities}
+										value={sanitizedFacilities}
 										placeholder="Facilities"
 										onChange={(e) => setFacilities(e.target.value)}
 										required
@@ -223,7 +242,7 @@ const CreateHotel = () => {
 										}}
 										as="textarea"
 										type="rules"
-										value={rules}
+										value={sanitizedRules}
 										placeholder="Rules"
 										onChange={(e) => setRules(e.target.value)}
 										required
