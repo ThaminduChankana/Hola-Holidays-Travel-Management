@@ -7,6 +7,7 @@ import Loading from "../../../components/Loading";
 import ErrorMessage from "../../../components/ErrorMessage";
 import { Link, useHistory } from "react-router-dom/cjs/react-router-dom";
 import { ADMIN_REGISTER_AFTER_SUCCESS } from "../../../constants/userManagementConstants/adminConstants";
+import "./RegisterScreen.css";
 
 function AdminRegisterScreen() {
 	const [name, setName] = useState("");

@@ -7,6 +7,7 @@ import Loading from "../../../components/Loading";
 import ErrorMessage from "../../../components/ErrorMessage";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { CUSTOMER_REGISTER_AFTER_SUCCESS } from "../../../constants/userManagementConstants/customerConstants";
+import "./RegisterScreen.css";
 
 function CustomerRegisterScreen() {
 	const [firstName, setFirstName] = useState("");

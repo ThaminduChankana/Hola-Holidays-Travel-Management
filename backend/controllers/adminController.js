@@ -1,5 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Admin = require("../models/adminModel");
+const generateToken = require("../utils/generateToken");
+const bcrypt = require("bcryptjs");
 
 // register user as a admin
 const registerAdmin = asyncHandler(async (req, res) => {
@@ -20,10 +22,23 @@ const registerAdmin = asyncHandler(async (req, res) => {
 		pic,
 	});
 
-	const addedAdmin =await admin.save();
+	const salt = await bcrypt.genSalt(10);
+
+	admin.password = await bcrypt.hash(password, salt);
+
+	await admin.save();
 
 	if (admin) {
-		res.status(201).json(addedAdmin);
+		res.status(201).json({
+			_id: admin._id,
+			name: admin.name,
+			isAdmin: admin.isAdmin,
+			telephone: admin.telephone,
+			address: admin.address,
+			email: admin.email,
+			pic: admin.pic,
+			token: generateToken(admin._id),
+		});
 	} else {
 		res.status(400);
 		throw new Error("Admin Registration Failed !");
@@ -55,6 +70,7 @@ const authAdmin = asyncHandler(async (req, res) => {
 			email: admin.email,
 			password: admin.password,
 			pic: admin.pic,
+			token: generateToken(admin._id),
 		});
 	}
 });
@@ -95,6 +111,7 @@ const updateAdminProfile = asyncHandler(async (req, res) => {
 			address: updatedAdmin.address,
 			email: updatedAdmin.email,
 			pic: updatedAdmin.pic,
+			token: generateToken(updatedAdmin._id),
 		});
 	} else {
 		res.status(404);
