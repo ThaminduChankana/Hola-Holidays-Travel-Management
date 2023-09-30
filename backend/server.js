@@ -25,9 +25,11 @@ dotenv.config();
 connectDB();
 app.use(express.json());
 
-//fixed Cross domain  miss configuration of backend
+//fixed Cross domain  miss-configuration of backend
 const corsOptions = {
 	origin: ["http://localhost:3000"],
+	methods: 'GET,HEAD,PUT,POST,DELETE',
+	allowedHeaders: 'Content-Type,Authorization',
 };
 
 app.use(cors(corsOptions));
