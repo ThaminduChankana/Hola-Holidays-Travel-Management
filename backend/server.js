@@ -25,12 +25,13 @@ dotenv.config();
 connectDB();
 app.use(express.json());
 
+//fixed Cross domain  miss configuration of backend
 const corsOptions = {
-	origin: ["http://localhost:3000"]
-  };
-  
+	origin: ["http://localhost:3000"],
+};
+
 app.use(cors(corsOptions));
-  
+
 app.get("/", (req, res) => {
 	res.send("API is Running");
 });
