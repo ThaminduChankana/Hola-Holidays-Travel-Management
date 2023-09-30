@@ -28,20 +28,20 @@ app.get("/", (req, res) => {
 	res.send("API is Running");
 });
 
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(
-	session({
-		secret: config.SESSION_SECRET,
-		resave: false,
-		saveUninitialized: false,
-		cookie: {
-			secure: false,
-			expires: new Date(Date.now() + 10000),
-			maxAge: 10000,
-		},
-	})
-);
+// app.use(passport.initialize());
+// app.use(passport.session());
+// app.use(
+// 	session({
+// 		secret: config.SESSION_SECRET,
+// 		resave: false,
+// 		saveUninitialized: false,
+// 		cookie: {
+// 			secure: false,
+// 			expires: new Date(Date.now() + 10000),
+// 			maxAge: 10000,
+// 		},
+// 	})
+// );
 
 app.use("/user/admin", adminRoutes);
 app.use("/user/customer", customerRoutes);
@@ -58,5 +58,5 @@ app.use(errorHandler);
 const PORT = 5001 || 5002;
 app.listen(PORT, () => {
 	console.log(`Server Started on port ${PORT}..`);
-	googleAuth(passport);
+	// googleAuth(passport);
 });
