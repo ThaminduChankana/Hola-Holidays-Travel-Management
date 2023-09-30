@@ -38,7 +38,6 @@ const AdminEditScreen = () => {
 	}, [adminInfo]);
 
 	const resetHandler = async (e) => {
-		e.preventDefault();
 
 		setName("");
 		setTelephone("");
