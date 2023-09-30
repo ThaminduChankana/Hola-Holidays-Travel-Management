@@ -14,6 +14,11 @@ const roomRoutes = require("./routes/roomRoutes");
 const reservationRoutes = require("./routes/reservationRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
+const { googleAuth } = require("./config/google_auth");
+const passport = require("passport");
+const session = require("express");
+const config = require("./config/config");
+
 dotenv.config();
 connectDB();
 app.use(express.json());
@@ -22,6 +27,21 @@ app.use("*", cors());
 app.get("/", (req, res) => {
 	res.send("API is Running");
 });
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(
+	session({
+		secret: config.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			secure: false,
+			expires: new Date(Date.now() + 10000),
+			maxAge: 10000,
+		},
+	})
+);
 
 app.use("/user/admin", adminRoutes);
 app.use("/user/customer", customerRoutes);
@@ -36,4 +56,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 const PORT = 5001 || 5002;
-app.listen(PORT, console.log(`Server Started on port ${PORT}..`));
+app.listen(PORT, () => {
+	console.log(`Server Started on port ${PORT}..`);
+	googleAuth(passport);
+});
