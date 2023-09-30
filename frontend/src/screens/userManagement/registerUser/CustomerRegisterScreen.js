@@ -1,16 +1,15 @@
-import { useState } from "react";
-import { Button, Row, Col, Card } from "react-bootstrap";
-import Form from "react-bootstrap/Form";
+import React, { useState } from "react";
+import MainScreen from "../../../components/MainScreen";
 import { useDispatch, useSelector } from "react-redux";
+import { Form, Button, Row, Col, Card } from "react-bootstrap";
+import { customerRegister } from "../../../actions/userManagementActions/customerActions";
 import Loading from "../../../components/Loading";
 import ErrorMessage from "../../../components/ErrorMessage";
-import { customerRegister } from "../../../actions/userManagementActions/customerActions";
-import MainScreen from "../../../components/MainScreen";
-import "./RegisterScreen.css";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { CUSTOMER_REGISTER_AFTER_SUCCESS } from "../../../constants/userManagementConstants/customerConstants";
+import "./RegisterScreen.css";
 
-const CustomerRegisterScreen = () => {
+function CustomerRegisterScreen() {
 	const [firstName, setFirstName] = useState("");
 	const [lastName, setLastName] = useState("");
 	const [telephone, setTelephone] = useState("");
@@ -24,42 +23,14 @@ const CustomerRegisterScreen = () => {
 	const [message, setMessage] = useState(null);
 	const [picMessage, setPicMessage] = useState(null);
 
-	const history = useHistory();
-
 	const dispatch = useDispatch();
+
 	const customerRegistration = useSelector((state) => state.customerRegistration);
 	const { loading, error, success } = customerRegistration;
 
-	const submitHandler = async (e) => {
-		e.preventDefault();
+	const history = useHistory();
 
-		if (password !== confirmpassword) {
-			setMessage("Passwords do not match");
-		} else {
-			await dispatch(customerRegister(firstName, lastName, telephone, address, gender, country, email, password, pic));
-
-			await dispatch({ type: CUSTOMER_REGISTER_AFTER_SUCCESS, payload: null });
-			resetHandler();
-		}
-	};
-
-	const demoHandler = async (e) => {
-		e.preventDefault();
-
-		setFirstName("Jan");
-		setLastName("Levinson");
-		setTelephone("0778569896");
-		setAddress("Colombo");
-		setGender("Female");
-		setCountry("Sri Lanka");
-		setEmail("janlevinson@gmail.com");
-		setPassword("test");
-		setConfirmPassword("test");
-	};
-
-	const resetHandler = async (e) => {
-		e.preventDefault();
-
+	const resetHandler = () => {
 		setFirstName("");
 		setLastName("");
 		setTelephone("");
@@ -72,6 +43,31 @@ const CustomerRegisterScreen = () => {
 		setPic("https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg");
 		setMessage(null);
 		setPicMessage(null);
+	};
+
+	const demoHandler = () => {
+		setFirstName("Jan");
+		setLastName("Levinson");
+		setTelephone("0778569896");
+		setAddress("Colombo");
+		setGender("Female");
+		setCountry("Sri Lanka");
+		setEmail("janlevinson@gmail.com");
+		setPassword("test");
+		setConfirmPassword("test");
+	};
+
+	const submitHandler = async (e) => {
+		e.preventDefault();
+
+		if (!firstName || !lastName || !telephone || !address || !gender || !country || !email || !password || !pic) return;
+		if (password !== confirmpassword) {
+			setMessage("Passwords do not match");
+		} else {
+			dispatch(await customerRegister(firstName, lastName, telephone, address, gender, country, email, password, pic));
+			await dispatch({ type: CUSTOMER_REGISTER_AFTER_SUCCESS, payload: null });
+			resetHandler();
+		}
 	};
 
 	const postDetails = (pics) => {
@@ -99,6 +95,7 @@ const CustomerRegisterScreen = () => {
 			return setPicMessage("Please Select an Image");
 		}
 	};
+
 	return (
 		<div className="registerBg">
 			<br></br>
@@ -114,7 +111,7 @@ const CustomerRegisterScreen = () => {
 						paddingInline: 10,
 						paddingLeft: 25,
 						paddingRight: 25,
-						background: "rgba(231, 238, 238, 0.8)",
+						background: "rgba(231, 238, 238, 0.9)",
 					}}
 				>
 					<div className="loginContainer">
@@ -300,26 +297,26 @@ const CustomerRegisterScreen = () => {
 								<img
 									src={pic}
 									alt={firstName}
-									className="profilePic"
+									className="sitePic"
 									style={{
 										boxShadow: "7px 7px 20px ",
 										borderColor: "black",
-										borderRadius: 250,
+										borderRadius: 25,
 										background: "white",
+										margin: "15px",
 										width: "300px",
 										height: "300px",
 									}}
 								/>
 							</Col>
 						</Row>
-						<br></br>
 					</div>
+					<br></br>
 				</Card>
 				<br></br>
 			</MainScreen>
-			<br></br>
 		</div>
 	);
-};
+}
 
 export default CustomerRegisterScreen;

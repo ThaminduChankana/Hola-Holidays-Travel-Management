@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { Form, Button, Row, Col, Card } from "react-bootstrap";
+import React, { useState } from "react";
+import MainScreen from "../../../components/MainScreen";
 import { useDispatch, useSelector } from "react-redux";
+import { Form, Button, Row, Col, Card } from "react-bootstrap";
+import { adminRegister } from "../../../actions/userManagementActions/adminActions";
 import Loading from "../../../components/Loading";
 import ErrorMessage from "../../../components/ErrorMessage";
-import { adminRegister } from "../../../actions/userManagementActions/adminActions";
-import MainScreen from "../../../components/MainScreen";
-import "./RegisterScreen.css";
 import { Link, useHistory } from "react-router-dom/cjs/react-router-dom";
 import { ADMIN_REGISTER_AFTER_SUCCESS } from "../../../constants/userManagementConstants/adminConstants";
+import "./RegisterScreen.css";
 
-const AdminRegisterScreen = () => {
+function AdminRegisterScreen() {
 	const [name, setName] = useState("");
 	const [telephone, setTelephone] = useState("");
 	const [address, setAddress] = useState("");
@@ -21,37 +21,13 @@ const AdminRegisterScreen = () => {
 	const [picMessage, setPicMessage] = useState(null);
 
 	const dispatch = useDispatch();
+
 	const adminRegistration = useSelector((state) => state.adminRegistration);
 	const { loading, error, success } = adminRegistration;
 
 	const history = useHistory();
 
-	const submitHandler = async (e) => {
-		e.preventDefault();
-
-		if (password !== confirmpassword) {
-			setMessage("Passwords do not match");
-		} else {
-			await dispatch(adminRegister(name, telephone, address, email, password, pic));
-			await dispatch({ type: ADMIN_REGISTER_AFTER_SUCCESS, payload: null });
-			resetHandler();
-		}
-	};
-
-	const demoHandler = async (e) => {
-		e.preventDefault();
-
-		setName("Dwight Shrute");
-		setTelephone("0715689562");
-		setAddress("Colombo");
-		setEmail("dwightshrute@gmail.com");
-		setPassword("test");
-		setConfirmPassword("test");
-	};
-
-	const resetHandler = async (e) => {
-		e.preventDefault();
-
+	const resetHandler = () => {
 		setName("");
 		setTelephone("");
 		setAddress("");
@@ -61,6 +37,28 @@ const AdminRegisterScreen = () => {
 		setMessage(null);
 		setPic("https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg");
 		setPicMessage(null);
+	};
+
+	const demoHandler = () => {
+		setName("Dwight Shrute");
+		setTelephone("0715689562");
+		setAddress("Colombo");
+		setEmail("dwightshrute@gmail.com");
+		setPassword("test");
+		setConfirmPassword("test");
+	};
+
+	const submitHandler = async (e) => {
+		e.preventDefault();
+
+		if (!name || !telephone || !address || !email || !password || !pic) return;
+		if (password !== confirmpassword) {
+			setMessage("Passwords do not match");
+		} else {
+			dispatch(await adminRegister(name, telephone, address, email, password, pic));
+			await dispatch({ type: ADMIN_REGISTER_AFTER_SUCCESS, payload: null });
+			resetHandler();
+		}
 	};
 
 	const postDetails = (pics) => {
@@ -88,6 +86,7 @@ const AdminRegisterScreen = () => {
 			return setPicMessage("Please Select an Image");
 		}
 	};
+
 	return (
 		<div className="registerBg">
 			<br></br>
@@ -107,7 +106,6 @@ const AdminRegisterScreen = () => {
 				</Link>
 				<br></br>
 				<br></br>
-				<br></br>
 				<Card
 					className="profileCont"
 					style={{
@@ -117,7 +115,7 @@ const AdminRegisterScreen = () => {
 						paddingInline: 10,
 						paddingLeft: 25,
 						paddingRight: 25,
-						background: "rgba(231, 238, 238, 0.8)",
+						background: "rgba(231, 238, 238, 0.9)",
 					}}
 				>
 					<div className="loginContainer">
@@ -135,12 +133,12 @@ const AdminRegisterScreen = () => {
 						<Row className="AdminProfileContainer">
 							<Col md={6}>
 								<Form onSubmit={submitHandler}>
-									<Form.Group controlId="adminName">
+									<Form.Group controlId="adminFirstName">
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Name</Form.Label>
 										<Form.Control
 											type="name"
 											value={name}
-											placeholder="Enter name"
+											placeholder="Enter your name"
 											onChange={(e) => setName(e.target.value)}
 											required
 										/>
@@ -159,12 +157,19 @@ const AdminRegisterScreen = () => {
 									<br></br>
 									<Form.Group controlId="adminFormBasicAddress">
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Address</Form.Label>
-										<Form.Control
-											type="textArea"
+										<textarea
+											style={{
+												width: "100%",
+												fontSize: "16px",
+												borderRadius: "5px",
+												padding: "5px",
+												border: "none",
+											}}
 											value={address}
-											placeholder="Enter Address"
 											onChange={(e) => setAddress(e.target.value)}
+											placeholder="Enter your address"
 											required
+											rows={2}
 										/>
 									</Form.Group>
 									<br></br>
@@ -173,7 +178,7 @@ const AdminRegisterScreen = () => {
 										<Form.Control
 											type="email"
 											value={email}
-											placeholder="Enter Email Address"
+											placeholder="Enter  your email address"
 											onChange={(e) => setEmail(e.target.value)}
 											required
 										/>
@@ -257,26 +262,26 @@ const AdminRegisterScreen = () => {
 								<img
 									src={pic}
 									alt={name}
-									className="profilePic"
+									className="sitePic"
 									style={{
 										boxShadow: "7px 7px 20px ",
 										borderColor: "black",
-										borderRadius: 250,
+										borderRadius: 25,
 										background: "white",
+										margin: "15px",
 										width: "300px",
 										height: "300px",
 									}}
 								/>
 							</Col>
 						</Row>
-						<br></br>
 					</div>
+					<br></br>
 				</Card>
 				<br></br>
 			</MainScreen>
-			<br></br>
 		</div>
 	);
-};
+}
 
 export default AdminRegisterScreen;
