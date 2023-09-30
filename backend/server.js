@@ -14,15 +14,12 @@ const roomRoutes = require("./routes/roomRoutes");
 const reservationRoutes = require("./routes/reservationRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
-
-const { googleAuth } = require("./config/google_auth");
-const passport = require("passport");
-const session = require("express");
-const config = require("./config/config");
+// const { googleAuth } = require("./config/google_auth");
+// const passport = require("passport");
+// const session = require("express");
+// const config = require("./config/config");
 
 const helmet = require("helmet");
-
-
 
 dotenv.config();
 connectDB();
@@ -32,7 +29,6 @@ app.use("*", cors());
 app.get("/", (req, res) => {
 	res.send("API is Running");
 });
-
 
 //fix the CSP header vulnerability
 app.use(helmet());
@@ -63,7 +59,6 @@ app.use(
 // 	})
 // );
 
-
 app.use("/user/admin", adminRoutes);
 app.use("/user/customer", customerRoutes);
 app.use("/sites", siteRoutes);
@@ -82,4 +77,3 @@ app.listen(PORT, () => {
 	console.log(`Server Started on port ${PORT}..`);
 	// googleAuth(passport);
 });
-
