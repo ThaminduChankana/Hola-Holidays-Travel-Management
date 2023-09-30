@@ -72,11 +72,14 @@ const authCustomer = asyncHandler(async (req, res) => {
 	} else {
 		const sessionId = crypto.randomUUID();
 		SESSIONS.set(sessionId, customer._id);
+		const expirationDate = new Date();
+		expirationDate.setDate(expirationDate.getDate() + 2);
 
 		//Set the cookie
 		res.cookie("sessionId", sessionId, {
 			httpOnly: false,
 			withCredentials: true,
+			expires: expirationDate,
 		});
 
 		res.status(201).json({
