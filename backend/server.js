@@ -17,8 +17,13 @@ const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 dotenv.config();
 connectDB();
 app.use(express.json());
-app.use("*", cors());
 
+const corsOptions = {
+	origin: ["http://localhost:3000"]
+  };
+  
+app.use(cors(corsOptions));
+  
 app.get("/", (req, res) => {
 	res.send("API is Running");
 });
