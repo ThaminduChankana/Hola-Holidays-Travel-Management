@@ -8,6 +8,7 @@ import ErrorMessage from "../../../components/ErrorMessage";
 import MainScreen from "../../../components/MainScreen";
 import axios from "axios";
 import "./hotelManagement.css";
+import { authHeader } from "../../../actions/userManagementActions/adminActions";
 import { HOTEL_UPDATE_ADMIN_AFTER_SUCCESS } from "../../../constants/hotelManagementConstants/hotelConstant";
 import { API_ENDPOINT } from "../../../config";
 
@@ -32,7 +33,9 @@ export default function UpdateHotel({ match }) {
 
 	useEffect(() => {
 		const fetching = async () => {
-			const { data } = await axios.get(`${API_ENDPOINT}/hotels/hotel/${match.params.id}`);
+			const { data } = await axios.get(`${API_ENDPOINT}/hotels/hotel/${match.params.id}`, {
+				headers: authHeader(),
+			});
 			setHotelName(data.hotelName);
 			setAddress(data.address);
 			setLocation(data.location);
@@ -82,188 +85,197 @@ export default function UpdateHotel({ match }) {
 		dispatch({ type: HOTEL_UPDATE_ADMIN_AFTER_SUCCESS, payload: null });
 	};
 
-	return (
-		<div className="updateHotel">
-			<br></br>
-			<MainScreen title="">
+	if (adminInfo) {
+		return (
+			<div className="updateHotel">
 				<br></br>
-				<br></br>
-				<div className="row">
-					<span style={{ display: "flex" }}>
-						<Link to={`/room-details/${match.params.id}`}>
-							<Button style={{ marginLeft: "900px", width: "50px", height: "50px", fontSize: "20px" }}>
-								<i class="fa fa-bed" aria-hidden="true"></i>
-							</Button>
-						</Link>
+				<MainScreen title="">
+					<br></br>
+					<br></br>
+					<div className="row">
+						<span style={{ display: "flex" }}>
+							<Link to={`/room-details/${match.params.id}`}>
+								<Button style={{ marginLeft: "900px", width: "50px", height: "50px", fontSize: "20px" }}>
+									<i class="fa fa-bed" aria-hidden="true"></i>
+								</Button>
+							</Link>
 
-						<Link to={`/hotel-reservations/${match.params.id}`}>
-							<Button style={{ marginLeft: "30px", width: "50px", height: "50px", fontSize: "20px" }}>
-								<i class="fa fa-calendar" aria-hidden="true"></i>
-							</Button>
-						</Link>
-					</span>
-				</div>
-				<br></br>
-				<br></br>
-				<Card
-					style={{
-						width: "80%",
-						borderWidth: 0,
-						border: "2px solid black",
-						marginLeft: 110,
-						borderRadius: "20px",
-					}}
-				>
-					<div
+							<Link to={`/hotel-reservations/${match.params.id}`}>
+								<Button style={{ marginLeft: "30px", width: "50px", height: "50px", fontSize: "20px" }}>
+									<i class="fa fa-calendar" aria-hidden="true"></i>
+								</Button>
+							</Link>
+						</span>
+					</div>
+					<br></br>
+					<br></br>
+					<Card
 						style={{
-							position: "relative",
-							textAlign: "center",
-							color: "white",
-							fontSize: "65px",
-							fontWeight: "bold",
+							width: "80%",
+							borderWidth: 0,
+							border: "2px solid black",
+							marginLeft: 110,
+							borderRadius: "20px",
 						}}
 					>
-						{" "}
-						<img
-							src="http://travelji.com/wp-content/uploads/Hotel-Tips.jpg"
-							alt=""
+						<div
 							style={{
-								width: "100%",
-								height: "250px",
-								background: "linear - gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6))",
-								borderRadius: "15px 15px 0px 0px",
+								position: "relative",
+								textAlign: "center",
+								color: "white",
+								fontSize: "65px",
+								fontWeight: "bold",
 							}}
-						></img>
-						<div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-							Update Hotel
+						>
+							{" "}
+							<img
+								src="http://travelji.com/wp-content/uploads/Hotel-Tips.jpg"
+								alt=""
+								style={{
+									width: "100%",
+									height: "250px",
+									background: "linear - gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6))",
+									borderRadius: "15px 15px 0px 0px",
+								}}
+							></img>
+							<div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
+								Update Hotel
+							</div>
 						</div>
-					</div>
-					<Card.Body style={{ marginLeft: "10%", marginRight: "10%", marginTop: "50px", marginBottom: "50px" }}>
-						<Form onSubmit={submitHandler}>
-							{error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
-							{success &&
-								setTimeout(function () {
-									history.push("/hotels-admin-view");
-								}, 2000)}
-							<Form.Group controlId="nic">
-								<Form.Control
-									type="name"
-									value={hotelName}
-									placeholder="Hotel Name"
-									onChange={(e) => setHotelName(e.target.value)}
-									required
-									style={{
-										height: 60,
-										fontSize: 18,
-										padding: "20px",
-									}}
-								/>
-							</Form.Group>
-							<br></br>
+						<Card.Body style={{ marginLeft: "10%", marginRight: "10%", marginTop: "50px", marginBottom: "50px" }}>
+							<Form onSubmit={submitHandler}>
+								{error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
+								{success &&
+									setTimeout(function () {
+										history.push("/hotels-admin-view");
+									}, 2000)}
+								<Form.Group controlId="nic">
+									<Form.Control
+										type="name"
+										value={hotelName}
+										placeholder="Hotel Name"
+										onChange={(e) => setHotelName(e.target.value)}
+										required
+										style={{
+											height: 60,
+											fontSize: 18,
+											padding: "20px",
+										}}
+									/>
+								</Form.Group>
+								<br></br>
 
-							<Form.Group controlId="address">
-								<Form.Control
-									style={{
-										height: 60,
-										fontSize: 18,
-										padding: "20px",
-									}}
-									placeholder="Address"
-									type="address"
-									required
-									value={address}
-									onChange={(e) => setAddress(e.target.value)}
-								/>
-							</Form.Group>
-							<br></br>
-							<Form.Group controlId="location">
-								<Form.Control
-									style={{
-										height: 60,
-										fontSize: 18,
-										padding: "20px",
-									}}
-									placeholder="Location"
-									type="location"
-									required
-									value={location}
-									onChange={(e) => setLocation(e.target.value)}
-								/>
-							</Form.Group>
-							<br></br>
-							<Form.Group controlId="description">
-								<Form.Control
-									style={{
-										height: 80,
-										fontSize: 18,
-										padding: "20px",
-									}}
-									as="textarea"
-									type="description"
-									value={description}
-									placeholder="Description"
-									onChange={(e) => setDescription(e.target.value)}
-									required
-								/>
-							</Form.Group>
-							<br></br>
-							<Form.Group controlId="facilities">
-								<Form.Control
-									style={{
-										height: 80,
-										fontSize: 18,
-										padding: "20px",
-									}}
-									as="textarea"
-									type="facilities"
-									value={facilities}
-									placeholder="Facilities"
-									onChange={(e) => setFacilities(e.target.value)}
-									required
-								/>
-							</Form.Group>
-							<br></br>
-							<Form.Group controlId="rules">
-								<Form.Control
-									style={{
-										height: 80,
-										fontSize: 18,
-										padding: "20px",
-									}}
-									as="textarea"
-									type="rules"
-									value={rules}
-									placeholder="Rules"
-									onChange={(e) => setRules(e.target.value)}
-									required
-								/>
-							</Form.Group>
-							<br></br>
-							{picMessage && <ErrorMessage variant="danger">{picMessage}</ErrorMessage>}
-							<Form.Group controlId="pic">
-								<input
-									style={{
-										height: 60,
-										fontSize: 18,
-										width: "300px",
-									}}
-									type="file"
-									accept="image/*"
-									id="hotel-pic"
-									onChange={(e) => postDetails(e.target.files[0])}
-								/>
-							</Form.Group>
-							{loading && <Loading size={50} />}
-							<Button style={{ fontSize: 20, marginTop: 10 }} type="submit" variant="primary">
-								Submit
-							</Button>
-						</Form>
-					</Card.Body>
-				</Card>
+								<Form.Group controlId="address">
+									<Form.Control
+										style={{
+											height: 60,
+											fontSize: 18,
+											padding: "20px",
+										}}
+										placeholder="Address"
+										type="address"
+										required
+										value={address}
+										onChange={(e) => setAddress(e.target.value)}
+									/>
+								</Form.Group>
+								<br></br>
+								<Form.Group controlId="location">
+									<Form.Control
+										style={{
+											height: 60,
+											fontSize: 18,
+											padding: "20px",
+										}}
+										placeholder="Location"
+										type="location"
+										required
+										value={location}
+										onChange={(e) => setLocation(e.target.value)}
+									/>
+								</Form.Group>
+								<br></br>
+								<Form.Group controlId="description">
+									<Form.Control
+										style={{
+											height: 80,
+											fontSize: 18,
+											padding: "20px",
+										}}
+										as="textarea"
+										type="description"
+										value={description}
+										placeholder="Description"
+										onChange={(e) => setDescription(e.target.value)}
+										required
+									/>
+								</Form.Group>
+								<br></br>
+								<Form.Group controlId="facilities">
+									<Form.Control
+										style={{
+											height: 80,
+											fontSize: 18,
+											padding: "20px",
+										}}
+										as="textarea"
+										type="facilities"
+										value={facilities}
+										placeholder="Facilities"
+										onChange={(e) => setFacilities(e.target.value)}
+										required
+									/>
+								</Form.Group>
+								<br></br>
+								<Form.Group controlId="rules">
+									<Form.Control
+										style={{
+											height: 80,
+											fontSize: 18,
+											padding: "20px",
+										}}
+										as="textarea"
+										type="rules"
+										value={rules}
+										placeholder="Rules"
+										onChange={(e) => setRules(e.target.value)}
+										required
+									/>
+								</Form.Group>
+								<br></br>
+								{picMessage && <ErrorMessage variant="danger">{picMessage}</ErrorMessage>}
+								<Form.Group controlId="pic">
+									<input
+										style={{
+											height: 60,
+											fontSize: 18,
+											width: "300px",
+										}}
+										type="file"
+										accept="image/*"
+										id="hotel-pic"
+										onChange={(e) => postDetails(e.target.files[0])}
+									/>
+								</Form.Group>
+								{loading && <Loading size={50} />}
+								<Button style={{ fontSize: 20, marginTop: 10 }} type="submit" variant="primary">
+									Submit
+								</Button>
+							</Form>
+						</Card.Body>
+					</Card>
+					<br></br>
+					<br></br>
+					<br></br>
+				</MainScreen>
+			</div>
+		);
+	} else {
+		return (
+			<div className="denied">
+				<MainScreen />
 				<br></br>
-				<br></br>
-				<br></br>
-			</MainScreen>
-		</div>
-	);
+			</div>
+		);
+	}
 }

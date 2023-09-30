@@ -55,212 +55,221 @@ export default function TourGuideAdd({ match }) {
 		setPhoneNumber("0112334565");
 	};
 
-	return (
-		<div className="GuardBackgroundCreate">
-			<MainScreen title={"Enter Tour Guide Info"}>
-				<Link to="/tour-guide-list">
-					<Button
-						variant="success"
+	if (adminInfo) {
+		return (
+			<div className="GuardBackgroundCreate">
+				<MainScreen title={"Enter Tour Guide Info"}>
+					<Link to="/tour-guide-list">
+						<Button
+							variant="success"
+							style={{
+								marginLeft: 10,
+								marginBottom: 6,
+								float: "left",
+								fontSize: 15,
+							}}
+							size="lg"
+						>
+							Back to the Tour guides List
+						</Button>
+					</Link>
+
+					<br></br>
+					<br></br>
+					<br></br>
+					<Card
 						style={{
-							marginLeft: 10,
-							marginBottom: 6,
-							float: "left",
-							fontSize: 15,
+							margin: 50,
+							marginLeft: "10%",
+							marginRight: "0%",
+							width: "80%",
+							borderRadius: 45,
+							borderWidth: 2.0,
+							marginTop: 20,
+							paddingInline: 10,
+							background: "rgba(231, 238, 238, 0.9)",
 						}}
-						size="lg"
 					>
-						Back to the Tour guides List
-					</Button>
-				</Link>
+						<Card.Body>
+							<br></br>
 
-				<br></br>
-				<br></br>
-				<br></br>
-				<Card
-					style={{
-						margin: 50,
-						marginLeft: "10%",
-						marginRight: "0%",
-						width: "80%",
-						borderRadius: 45,
-						borderWidth: 2.0,
-						marginTop: 20,
-						paddingInline: 10,
-						background: "rgba(231, 238, 238, 0.9)",
-					}}
-				>
-					<Card.Body>
-						<br></br>
+							<Form onSubmit={submitHandler}>
+								{error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
 
-						<Form onSubmit={submitHandler}>
-							{error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
-
-							<Form.Group controlId="guidename">
-								<Form.Label
-									style={{
-										paddingTop: 10,
-									}}
-								>
-									Tour Guide's Name
-								</Form.Label>
-								<Form.Control
-									style={{
-										height: 40,
-										fontSize: 15,
-									}}
-									type="guidename"
-									placeholder="Enter name"
-									value={name}
-									onChange={(e) => setName(e.target.value)}
-									required
-								/>
-							</Form.Group>
-							<Form.Group controlId="gender">
-								<Form.Label style={{ paddingTop: 10 }}>Gender</Form.Label>
-								<div>
-									<Form.Check
-										inline
-										label="Female"
-										type="radio"
-										id="female"
-										checked={gender === "female"}
-										onChange={() => setGender("female")}
-									/>
-									<Form.Check
-										inline
-										label="Male"
-										type="radio"
-										id="male"
-										checked={gender === "male"}
-										onChange={() => setGender("male")}
-									/>
-								</div>
-							</Form.Group>
-							<Form.Group controlId="language">
-								<Form.Label style={{ paddingTop: 10 }}>Language:</Form.Label>
-								<div>
-									<Form.Check
-										type="checkbox"
-										label="English"
-										checked={language === "English"}
-										onChange={() => setLanguage("English")}
-									/>
-									<Form.Check
-										type="checkbox"
-										label="Spanish"
-										checked={language === "Spanish"}
-										onChange={() => setLanguage("Spanish")}
-									/>
-									<Form.Check
-										type="checkbox"
-										label="French"
-										checked={language === "French"}
-										onChange={() => setLanguage("French")}
-									/>
-									<Form.Check
-										type="checkbox"
-										label="German"
-										checked={language === "German"}
-										onChange={() => setLanguage("German")}
-									/>
-								</div>
-							</Form.Group>
-
-							<Form.Group controlId="location">
-								<Form.Label
-									style={{
-										paddingTop: 10,
-									}}
-								>
-									location
-								</Form.Label>
-								<Form.Control
-									style={{
-										height: 40,
-										fontSize: 15,
-									}}
-									value={location}
-									placeholder="enter Location"
-									onChange={(e) => setLocation(e.target.value)}
-									required
-								/>
-
-								<Form.Group controlId="description">
+								<Form.Group controlId="guidename">
 									<Form.Label
 										style={{
 											paddingTop: 10,
 										}}
 									>
-										description
+										Tour Guide's Name
 									</Form.Label>
 									<Form.Control
-										as="textarea"
-										type="description"
-										value={description}
-										placeholder="enter description"
-										onChange={(e) => setDescription(e.target.value)}
+										style={{
+											height: 40,
+											fontSize: 15,
+										}}
+										type="guidename"
+										placeholder="Enter name"
+										value={name}
+										onChange={(e) => setName(e.target.value)}
 										required
 									/>
 								</Form.Group>
-							</Form.Group>
-							<Form.Group controlId="fee">
-								<Form.Label
-									style={{
-										paddingTop: 10,
-									}}
-								>
-									Fee
-								</Form.Label>
-								<Form.Control
-									style={{
-										height: 40,
-										fontSize: 15,
-									}}
-									type="fee"
-									value={fee}
-									placeholder="enter fee"
-									onChange={(e) => setFee(e.target.value)}
-									required
-								/>
-							</Form.Group>
-							<Form.Group controlId="phoneNumber">
-								<Form.Label
-									style={{
-										paddingTop: 10,
-									}}
-								>
-									telephone
-								</Form.Label>
-								<Form.Control
-									style={{
-										height: 40,
-										fontSize: 15,
-									}}
-									type="phoneNumber"
-									value={phoneNumber}
-									placeholder="enter telephone"
-									onChange={(e) => setPhoneNumber(e.target.value)}
-									required
-								/>
-							</Form.Group>
+								<Form.Group controlId="gender">
+									<Form.Label style={{ paddingTop: 10 }}>Gender</Form.Label>
+									<div>
+										<Form.Check
+											inline
+											label="Female"
+											type="radio"
+											id="female"
+											checked={gender === "female"}
+											onChange={() => setGender("female")}
+										/>
+										<Form.Check
+											inline
+											label="Male"
+											type="radio"
+											id="male"
+											checked={gender === "male"}
+											onChange={() => setGender("male")}
+										/>
+									</div>
+								</Form.Group>
+								<Form.Group controlId="language">
+									<Form.Label style={{ paddingTop: 10 }}>Language:</Form.Label>
+									<div>
+										<Form.Check
+											type="checkbox"
+											label="English"
+											checked={language === "English"}
+											onChange={() => setLanguage("English")}
+										/>
+										<Form.Check
+											type="checkbox"
+											label="Spanish"
+											checked={language === "Spanish"}
+											onChange={() => setLanguage("Spanish")}
+										/>
+										<Form.Check
+											type="checkbox"
+											label="French"
+											checked={language === "French"}
+											onChange={() => setLanguage("French")}
+										/>
+										<Form.Check
+											type="checkbox"
+											label="German"
+											checked={language === "German"}
+											onChange={() => setLanguage("German")}
+										/>
+									</div>
+								</Form.Group>
+
+								<Form.Group controlId="location">
+									<Form.Label
+										style={{
+											paddingTop: 10,
+										}}
+									>
+										location
+									</Form.Label>
+									<Form.Control
+										style={{
+											height: 40,
+											fontSize: 15,
+										}}
+										value={location}
+										placeholder="enter Location"
+										onChange={(e) => setLocation(e.target.value)}
+										required
+									/>
+
+									<Form.Group controlId="description">
+										<Form.Label
+											style={{
+												paddingTop: 10,
+											}}
+										>
+											description
+										</Form.Label>
+										<Form.Control
+											as="textarea"
+											type="description"
+											value={description}
+											placeholder="enter description"
+											onChange={(e) => setDescription(e.target.value)}
+											required
+										/>
+									</Form.Group>
+								</Form.Group>
+								<Form.Group controlId="fee">
+									<Form.Label
+										style={{
+											paddingTop: 10,
+										}}
+									>
+										Fee
+									</Form.Label>
+									<Form.Control
+										style={{
+											height: 40,
+											fontSize: 15,
+										}}
+										type="fee"
+										value={fee}
+										placeholder="enter fee"
+										onChange={(e) => setFee(e.target.value)}
+										required
+									/>
+								</Form.Group>
+								<Form.Group controlId="phoneNumber">
+									<Form.Label
+										style={{
+											paddingTop: 10,
+										}}
+									>
+										telephone
+									</Form.Label>
+									<Form.Control
+										style={{
+											height: 40,
+											fontSize: 15,
+										}}
+										type="phoneNumber"
+										value={phoneNumber}
+										placeholder="enter telephone"
+										onChange={(e) => setPhoneNumber(e.target.value)}
+										required
+									/>
+								</Form.Group>
+								<br></br>
+								{loading && <Loading size={50} />}
+								<Button type="submit" variant="success">
+									Submit
+								</Button>
+								<Button className="mx-2" onClick={resetHandler} variant="danger">
+									Reset
+								</Button>
+								<Button variant="info" onClick={demoHandler}>
+									Demo
+								</Button>
+							</Form>
 							<br></br>
-							{loading && <Loading size={50} />}
-							<Button type="submit" variant="success">
-								Submit
-							</Button>
-							<Button className="mx-2" onClick={resetHandler} variant="danger">
-								Reset
-							</Button>
-							<Button variant="info" onClick={demoHandler}>
-								Demo
-							</Button>
-						</Form>
-						<br></br>
-					</Card.Body>
-				</Card>
+						</Card.Body>
+					</Card>
+					<br></br>
+					<br></br>
+				</MainScreen>
+			</div>
+		);
+	} else {
+		return (
+			<div className="denied">
+				<MainScreen />
 				<br></br>
-				<br></br>
-			</MainScreen>
-		</div>
-	);
+			</div>
+		);
+	}
 }
