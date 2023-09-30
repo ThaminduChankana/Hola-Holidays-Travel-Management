@@ -38,6 +38,7 @@ export const customerLogin = (email, password) => async (dispatch) => {
 		dispatch({ type: CUSTOMER_LOGIN_REQUEST });
 
 		const config = {
+			withCredentials: true,
 			headers: {
 				"Content-type": "application/json",
 			},

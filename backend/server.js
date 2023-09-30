@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const app = express();
 const connectDB = require("./config/db");
 const adminRoutes = require("./routes/adminRoutes");
@@ -28,6 +29,7 @@ app.use(express.json());
 //fixed Cross domain  miss configuration of backend
 const corsOptions = {
 	origin: ["http://localhost:3000"],
+	credentials: true,
 };
 
 app.use(cors(corsOptions));
@@ -56,6 +58,8 @@ app.use((req, res, next) => {
 	res.setHeader("X-Frame-Options", "DENY");
 	next();
 });
+
+app.use(cookieParser());
 
 // app.use(passport.initialize());
 // app.use(passport.session());

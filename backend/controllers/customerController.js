@@ -2,6 +2,9 @@ const asyncHandler = require("express-async-handler");
 const Customer = require("../models/customerModel");
 const generateToken = require("../utils/generateToken");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
+
+const SESSIONS = new Map();
 
 // register  customer profile
 const registerCustomer = asyncHandler(async (req, res) => {
@@ -67,6 +70,15 @@ const authCustomer = asyncHandler(async (req, res) => {
 		res.status(400);
 		throw new Error("Invalid Email or Password");
 	} else {
+		const sessionId = crypto.randomUUID();
+		SESSIONS.set(sessionId, customer._id);
+
+		//Set the cookie
+		res.cookie("sessionId", sessionId, {
+			httpOnly: false,
+			withCredentials: true,
+		});
+
 		res.status(201).json({
 			_id: customer._id,
 			firstName: customer.firstName,
