@@ -29,7 +29,12 @@ export const listHotelAdmin = () => async (dispatch, getState) => {
 			admin_Login: { adminInfo },
 		} = getState();
 
-		const { data } = await axios.get(`${API_ENDPOINT}/hotels/get-hotels/${adminInfo._id}`);
+		const config = {
+			headers: {
+				Authorization: `Bearer ${adminInfo.token}`,
+			},
+		};
+		const { data } = await axios.get(`${API_ENDPOINT}/hotels/get-hotels/${adminInfo._id}`, config);
 
 		dispatch({
 			type: HOTEL_LIST_ADMIN_SUCCESS,
@@ -76,17 +81,26 @@ export const createHotelAction =
 				admin_Login: { adminInfo },
 			} = getState();
 
+			const config = {
+				headers: {
+					Authorization: `Bearer ${adminInfo.token}`,
+				},
+			};
 			const admin = adminInfo._id;
-			const { data } = await axios.post(`${API_ENDPOINT}/hotels/hotel/create`, {
-				admin,
-				hotelName,
-				address,
-				location,
-				description,
-				facilities,
-				rules,
-				pic,
-			});
+			const { data } = await axios.post(
+				`${API_ENDPOINT}/hotels/hotel/create`,
+				{
+					admin,
+					hotelName,
+					address,
+					location,
+					description,
+					facilities,
+					rules,
+					pic,
+				},
+				config
+			);
 
 			swal({
 				title: "Success !!!",
@@ -116,15 +130,29 @@ export const updateHotelAction =
 				type: HOTEL_UPDATE_ADMIN_REQUEST,
 			});
 
-			const { data } = await axios.put(`${API_ENDPOINT}/hotels/hotel/${id}`, {
-				hotelName,
-				address,
-				location,
-				description,
-				facilities,
-				rules,
-				pic,
-			});
+			const {
+				admin_Login: { adminInfo },
+			} = getState();
+
+			const config = {
+				headers: {
+					Authorization: `Bearer ${adminInfo.token}`,
+				},
+			};
+
+			const { data } = await axios.put(
+				`${API_ENDPOINT}/hotels/hotel/${id}`,
+				{
+					hotelName,
+					address,
+					location,
+					description,
+					facilities,
+					rules,
+					pic,
+				},
+				config
+			);
 
 			swal({
 				title: "Success !!!",
@@ -152,8 +180,17 @@ export const deleteHotelAction = (id) => async (dispatch, getState) => {
 		dispatch({
 			type: HOTEL_DELETE_ADMIN_REQUEST,
 		});
+		const {
+			admin_Login: { adminInfo },
+		} = getState();
 
-		const { data } = await axios.delete(`${API_ENDPOINT}/hotels/hotel/delete/${id}`);
+		const config = {
+			headers: {
+				Authorization: `Bearer ${adminInfo.token}`,
+			},
+		};
+
+		const { data } = await axios.delete(`${API_ENDPOINT}/hotels/hotel/delete/${id}`, config);
 
 		dispatch({
 			type: HOTEL_DELETE_ADMIN_SUCCESS,

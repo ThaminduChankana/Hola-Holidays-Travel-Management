@@ -53,88 +53,97 @@ export default function RoomDetails({ match, history }) {
 			});
 	};
 
-	return (
-		<div className="roomDetails">
-			<br></br>
-			<MainScreen title="">
+	if (adminInfo) {
+		return (
+			<div className="roomDetails">
 				<br></br>
-				<br></br>
-				<div className="row">
-					<span style={{ display: "flex" }}>
-						<h1
-							style={{
-								fontSize: "45px",
-								fontWeight: "bold",
-								marginLeft: "120px",
-								color: "white",
-							}}
+				<MainScreen title="">
+					<br></br>
+					<br></br>
+					<div className="row">
+						<span style={{ display: "flex" }}>
+							<h1
+								style={{
+									fontSize: "45px",
+									fontWeight: "bold",
+									marginLeft: "120px",
+									color: "white",
+								}}
+							>
+								View Room
+							</h1>
+							<Link to={`/room-create/${match.params.id}`}>
+								<Button style={{ marginLeft: "620px", width: "50px", height: "50px", fontSize: "20px" }}>+</Button>
+							</Link>
+						</span>
+					</div>
+					<br></br>
+					<br></br>
+					{errorDelete && <ErrorMessage variant="danger">{errorDelete}</ErrorMessage>}
+					{loadingDelete && <Loading />}
+					{adminRooms?.map((room) => (
+						<div
+							className="product-card-update"
+							style={{ marginBottom: "50px", border: "2px solid black", marginLeft: "110px", borderRadius: "20px" }}
 						>
-							View Room
-						</h1>
-						<Link to={`/room-create/${match.params.id}`}>
-							<Button style={{ marginLeft: "620px", width: "50px", height: "50px", fontSize: "20px" }}>+</Button>
-						</Link>
-					</span>
-				</div>
-				<br></br>
-				<br></br>
-				{errorDelete && <ErrorMessage variant="danger">{errorDelete}</ErrorMessage>}
-				{loadingDelete && <Loading />}
-				{adminRooms?.map((room) => (
-					<div
-						className="product-card-update"
-						style={{ marginBottom: "50px", border: "2px solid black", marginLeft: "110px", borderRadius: "20px" }}
-					>
-						<div className="details">
-							<div className="big-img">
-								<img
-									src={room.pic}
-									alt=""
-									style={{
-										width: "320px",
-										height: "220px",
-										margin: "5px",
-										borderRadius: "15px",
-									}}
-								></img>
-							</div>
-							<div className="box">
-								<div className="row" style={{ marginLeft: "50px" }}>
-									<span>
-										<h2>{room.roomType}</h2>
-									</span>
+							<div className="details">
+								<div className="big-img">
+									<img
+										src={room.pic}
+										alt=""
+										style={{
+											width: "320px",
+											height: "220px",
+											margin: "5px",
+											borderRadius: "15px",
+										}}
+									></img>
 								</div>
-								<div className="row" style={{ marginLeft: "50px" }}>
-									<span>
-										<h2 style={{ color: "black" }}>Price : {room.price} per day</h2>
-									</span>
-								</div>
-								<div className="row" style={{ marginLeft: "50px" }}>
-									<span>
-										<h2 style={{ color: "black" }}>Room Size : {room.roomSize}</h2>
-									</span>
-								</div>
+								<div className="box">
+									<div className="row" style={{ marginLeft: "50px" }}>
+										<span>
+											<h2>{room.roomType}</h2>
+										</span>
+									</div>
+									<div className="row" style={{ marginLeft: "50px" }}>
+										<span>
+											<h2 style={{ color: "black" }}>Price : {room.price} per day</h2>
+										</span>
+									</div>
+									<div className="row" style={{ marginLeft: "50px" }}>
+										<span>
+											<h2 style={{ color: "black" }}>Room Size : {room.roomSize}</h2>
+										</span>
+									</div>
 
-								<Link to={`/room-update/${room._id}`}>
-									<Button style={{ marginLeft: "50px", borderRadius: "15px" }} className="cart">
-										View
+									<Link to={`/room-update/${room._id}`}>
+										<Button style={{ marginLeft: "50px", borderRadius: "15px" }} className="cart">
+											View
+										</Button>
+									</Link>
+									<Button
+										onClick={() => deleteHandler(room._id)}
+										style={{ marginLeft: "20px", borderRadius: "15px", backgroundColor: "red" }}
+										className="cart"
+									>
+										Delete
 									</Button>
-								</Link>
-								<Button
-									onClick={() => deleteHandler(room._id)}
-									style={{ marginLeft: "20px", borderRadius: "15px", backgroundColor: "red" }}
-									className="cart"
-								>
-									Delete
-								</Button>
+								</div>
 							</div>
 						</div>
-					</div>
-				))}
+					))}
+					<br></br>
+					<br></br>
+					<br></br>
+				</MainScreen>
+			</div>
+		);
+	} else {
+		return (
+			<div className="denied">
+				<MainScreen />
 				<br></br>
-				<br></br>
-				<br></br>
-			</MainScreen>
-		</div>
-	);
+			</div>
+		);
+	}
 }

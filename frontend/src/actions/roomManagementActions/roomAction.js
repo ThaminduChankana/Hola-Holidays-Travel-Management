@@ -25,7 +25,16 @@ export const listRoomAdmin = (id) => async (dispatch, getState) => {
 			type: ROOM_LIST_ADMIN_REQUEST,
 		});
 
-		const { data } = await axios.get(`${API_ENDPOINT}/rooms/get-rooms/${id}`);
+		const {
+			admin_Login: { adminInfo },
+		} = getState();
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${adminInfo.token}`,
+			},
+		};
+		const { data } = await axios.get(`${API_ENDPOINT}/rooms/get-rooms/${id}`, config);
 
 		dispatch({
 			type: ROOM_LIST_ADMIN_SUCCESS,
@@ -73,19 +82,28 @@ export const createRoomAction =
 				admin_Login: { adminInfo },
 			} = getState();
 
+			const config = {
+				headers: {
+					Authorization: `Bearer ${adminInfo.token}`,
+				},
+			};
 			const admin = adminInfo._id;
-			const { data } = await axios.post(`${API_ENDPOINT}/rooms/room/create`, {
-				admin,
-				hotel,
-				roomType,
-				availability,
-				beds,
-				roomSize,
-				roomFacilities,
-				bathRoomFacilities,
-				price,
-				pic,
-			});
+			const { data } = await axios.post(
+				`${API_ENDPOINT}/rooms/room/create`,
+				{
+					admin,
+					hotel,
+					roomType,
+					availability,
+					beds,
+					roomSize,
+					roomFacilities,
+					bathRoomFacilities,
+					price,
+					pic,
+				},
+				config
+			);
 
 			swal({
 				title: "Success !!!",
@@ -116,16 +134,30 @@ export const updateRoomAction =
 				type: ROOM_UPDATE_ADMIN_REQUEST,
 			});
 
-			const { data } = await axios.put(`${API_ENDPOINT}/rooms/room/${id}`, {
-				roomType,
-				availability,
-				beds,
-				roomSize,
-				roomFacilities,
-				bathRoomFacilities,
-				price,
-				pic,
-			});
+			const {
+				admin_Login: { adminInfo },
+			} = getState();
+
+			const config = {
+				headers: {
+					Authorization: `Bearer ${adminInfo.token}`,
+				},
+			};
+
+			const { data } = await axios.put(
+				`${API_ENDPOINT}/rooms/room/${id}`,
+				{
+					roomType,
+					availability,
+					beds,
+					roomSize,
+					roomFacilities,
+					bathRoomFacilities,
+					price,
+					pic,
+				},
+				config
+			);
 			swal({
 				title: "Success !!!",
 				text: "Room successfully updated.",
@@ -152,8 +184,17 @@ export const deleteRoomAction = (id) => async (dispatch, getState) => {
 		dispatch({
 			type: ROOM_DELETE_ADMIN_REQUEST,
 		});
+		const {
+			admin_Login: { adminInfo },
+		} = getState();
 
-		const { data } = await axios.delete(`${API_ENDPOINT}/rooms/room/delete/${id}`);
+		const config = {
+			headers: {
+				Authorization: `Bearer ${adminInfo.token}`,
+			},
+		};
+
+		const { data } = await axios.delete(`${API_ENDPOINT}/rooms/room/delete/${id}`, config);
 
 		dispatch({
 			type: ROOM_DELETE_ADMIN_SUCCESS,

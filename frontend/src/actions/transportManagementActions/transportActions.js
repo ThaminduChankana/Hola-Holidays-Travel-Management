@@ -19,6 +19,16 @@ import axios from "axios";
 import { API_ENDPOINT } from "../../config";
 import Swal from "sweetalert2";
 
+export function authHeaderForAdmin() {
+	let admin = JSON.parse(localStorage.getItem("adminInfo"));
+
+	if (admin && admin.token) {
+		return { Authorization: `Bearer ${admin.token}` };
+	} else {
+		return {};
+	}
+}
+
 export const transportListForCustomer = () => async (dispatch, getState) => {
 	try {
 		dispatch({
@@ -46,7 +56,17 @@ export const transportListForAdmin = () => async (dispatch, getState) => {
 			type: TRANSPORT_LIST_FOR_ADMIN_REQUEST,
 		});
 
-		const { data } = await axios.get(`${API_ENDPOINT}/transport/admin/get`);
+		const {
+			admin_Login: { adminInfo },
+		} = getState();
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${adminInfo.token}`,
+			},
+		};
+
+		const { data } = await axios.get(`${API_ENDPOINT}/transport/admin/get`, config);
 
 		dispatch({
 			type: TRANSPORT_LIST_FOR_ADMIN_SUCCESS,
@@ -80,18 +100,33 @@ export const createTransport =
 				type: TRANSPORT_CREATE_REQUEST,
 			});
 
-			const { data } = await axios.post(`${API_ENDPOINT}/transport/admin/add`, {
-				licensePlate,
-				startingStation,
-				destinationStation,
-				totalTravelTime,
-				totalNumberOfSeats,
-				ticketPrice,
-				facilities,
-				cityStops,
-				mobileNo,
-				leavingTime,
-			});
+			const {
+				admin_Login: { adminInfo },
+			} = getState();
+
+			const config = {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${adminInfo.token}`,
+				},
+			};
+
+			const { data } = await axios.post(
+				`${API_ENDPOINT}/transport/admin/add`,
+				{
+					licensePlate,
+					startingStation,
+					destinationStation,
+					totalTravelTime,
+					totalNumberOfSeats,
+					ticketPrice,
+					facilities,
+					cityStops,
+					mobileNo,
+					leavingTime,
+				},
+				config
+			);
 
 			dispatch({
 				type: TRANSPORT_CREATE_SUCCESS,
@@ -132,18 +167,33 @@ export const UpdateTransport =
 				type: TRANSPORT_UPDATE_BY_ADMIN_REQUEST,
 			});
 
-			const { data } = await axios.put(`${API_ENDPOINT}/transport/admin/get/${id}`, {
-				licensePlate,
-				startingStation,
-				destinationStation,
-				totalTravelTime,
-				totalNumberOfSeats,
-				ticketPrice,
-				facilities,
-				cityStops,
-				mobileNo,
-				leavingTime,
-			});
+			const {
+				admin_Login: { adminInfo },
+			} = getState();
+
+			const config = {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${adminInfo.token}`,
+				},
+			};
+
+			const { data } = await axios.put(
+				`${API_ENDPOINT}/transport/admin/get/${id}`,
+				{
+					licensePlate,
+					startingStation,
+					destinationStation,
+					totalTravelTime,
+					totalNumberOfSeats,
+					ticketPrice,
+					facilities,
+					cityStops,
+					mobileNo,
+					leavingTime,
+				},
+				config
+			);
 
 			dispatch({
 				type: TRANSPORT_UPDATE_BY_ADMIN_SUCCESS,
@@ -164,7 +214,17 @@ export const deleteTranspoterByAdmin = (id) => async (dispatch, getState) => {
 			type: TRANSPORT_DELETE_BY_ADMIN_REQUEST,
 		});
 
-		const { data } = await axios.delete(`${API_ENDPOINT}/transport/admin/get/${id}`);
+		const {
+			admin_Login: { adminInfo },
+		} = getState();
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${adminInfo.token}`,
+			},
+		};
+
+		const { data } = await axios.delete(`${API_ENDPOINT}/transport/admin/get/${id}`, config);
 
 		dispatch({
 			type: TRANSPORT_DELETE_BY_ADMIN_SUCCESS,

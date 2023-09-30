@@ -53,87 +53,96 @@ export default function AdminHotelList() {
 	useEffect(() => {
 		dispatch(listHotelAdmin());
 	}, [dispatch, history, successDelete]);
-	return (
-		<div className="adminHoteList" style={{ minHeight: 900 }}>
-			<br></br>
-			<br></br>
-			<MainScreen title="">
+	if (adminInfo) {
+		return (
+			<div className="adminHoteList" style={{ minHeight: 900 }}>
 				<br></br>
 				<br></br>
+				<MainScreen title="">
+					<br></br>
+					<br></br>
 
-				<div className="row">
-					<span style={{ display: "flex" }}>
-						<h1
-							style={{
-								fontSize: "45px",
-								fontWeight: "bold",
-								marginLeft: "80px",
-								color: "white",
-							}}
-						>
-							View Hotel
-						</h1>
-						<Link to="/admin-hotel-create">
-							<Button style={{ marginLeft: "720px", width: "50px", height: "50px", fontSize: "20px" }}>+</Button>
-						</Link>
-					</span>
-				</div>
+					<div className="row">
+						<span style={{ display: "flex" }}>
+							<h1
+								style={{
+									fontSize: "45px",
+									fontWeight: "bold",
+									marginLeft: "80px",
+									color: "white",
+								}}
+							>
+								View Hotel
+							</h1>
+							<Link to="/admin-hotel-create">
+								<Button style={{ marginLeft: "720px", width: "50px", height: "50px", fontSize: "20px" }}>+</Button>
+							</Link>
+						</span>
+					</div>
 
-				{errorDelete && <ErrorMessage variant="danger">{errorDelete}</ErrorMessage>}
-				{loadingDelete && <Loading />}
-				{error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
-				{loading && <Loading />}
-				{adminHotels?.map((hotel) => (
-					<div className="product-card" style={{ border: "2px solid black", borderRadius: "15px" }}>
-						<div className="details">
-							<div className="big-img">
-								<img
-									src={hotel.pic}
-									alt=""
-									style={{
-										width: "320px",
-										height: "220px",
-										borderRadius: "15px",
-										margin: "5px",
-									}}
-								></img>
-							</div>
-							<div className="box">
-								<div className="row" style={{ marginLeft: "50px" }}>
-									<span>
-										<h2>{hotel.hotelName}</h2>
-									</span>
+					{errorDelete && <ErrorMessage variant="danger">{errorDelete}</ErrorMessage>}
+					{loadingDelete && <Loading />}
+					{error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
+					{loading && <Loading />}
+					{adminHotels?.map((hotel) => (
+						<div className="product-card" style={{ border: "2px solid black", borderRadius: "15px" }}>
+							<div className="details">
+								<div className="big-img">
+									<img
+										src={hotel.pic}
+										alt=""
+										style={{
+											width: "320px",
+											height: "220px",
+											borderRadius: "15px",
+											margin: "5px",
+										}}
+									></img>
 								</div>
-								<div className="row" style={{ marginLeft: "50px" }}>
-									<span>
-										<h2 style={{ color: "black" }}>{hotel.location}</h2>
-									</span>
-								</div>
-								<div className="row" style={{ marginLeft: "50px" }}>
-									<span>
-										<h2 style={{ color: "black" }}>{hotel.address}</h2>
-									</span>
-								</div>
+								<div className="box">
+									<div className="row" style={{ marginLeft: "50px" }}>
+										<span>
+											<h2>{hotel.hotelName}</h2>
+										</span>
+									</div>
+									<div className="row" style={{ marginLeft: "50px" }}>
+										<span>
+											<h2 style={{ color: "black" }}>{hotel.location}</h2>
+										</span>
+									</div>
+									<div className="row" style={{ marginLeft: "50px" }}>
+										<span>
+											<h2 style={{ color: "black" }}>{hotel.address}</h2>
+										</span>
+									</div>
 
-								<Link to={`/hotel-update/${hotel._id}`}>
-									<Button style={{ marginLeft: "50px", borderRadius: "15px" }} className="cart">
-										View
+									<Link to={`/hotel-update/${hotel._id}`}>
+										<Button style={{ marginLeft: "50px", borderRadius: "15px" }} className="cart">
+											View
+										</Button>
+									</Link>
+
+									<Button
+										onClick={() => deleteHandler(hotel._id)}
+										style={{ marginLeft: "20px", borderRadius: "15px", backgroundColor: "red" }}
+										className="cart"
+									>
+										Delete
 									</Button>
-								</Link>
-
-								<Button
-									onClick={() => deleteHandler(hotel._id)}
-									style={{ marginLeft: "20px", borderRadius: "15px", backgroundColor: "red" }}
-									className="cart"
-								>
-									Delete
-								</Button>
+								</div>
 							</div>
 						</div>
-					</div>
-				))}
+					))}
+					<br></br>
+				</MainScreen>
+			</div>
+		);
+	} else {
+		return (
+			<div className="denied">
+				<MainScreen />
 				<br></br>
-			</MainScreen>
-		</div>
-	);
+			</div>
+		);
+	}
 }
