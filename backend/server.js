@@ -19,6 +19,8 @@ const passport = require("passport");
 const session = require("express");
 const config = require("./config/config");
 
+const helmet = require("helmet");
+
 dotenv.config();
 connectDB();
 app.use(express.json());
@@ -27,6 +29,20 @@ app.use("*", cors());
 app.get("/", (req, res) => {
 	res.send("API is Running");
 });
+
+//fix the CSP header vulnerability
+app.use(helmet());
+
+app.use(
+	helmet.contentSecurityPolicy({
+		directives: {
+			defaultSrc: ["'self'"],
+			scriptSrc: ["'self'", "trusted-scripts.com"],
+			styleSrc: ["'self'", "trusted-styles.com"],
+		},
+		reportOnly: true,
+	})
+);
 
 // app.use(passport.initialize());
 // app.use(passport.session());
