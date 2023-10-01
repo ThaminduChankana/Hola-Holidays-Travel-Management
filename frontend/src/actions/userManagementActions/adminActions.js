@@ -72,6 +72,7 @@ export const adminRegister = (name, telephone, address, email, password, pic) =>
 		dispatch({ type: ADMIN_REGISTER_REQUEST });
 
 		const config = {
+			withCredentials: true,
 			headers: {
 				"Content-type": "application/json",
 			},
@@ -147,6 +148,7 @@ export const adminUpdateProfile = (admin) => async (dispatch, getState) => {
 		} = getState();
 
 		const config = {
+			withCredentials: true,
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${adminInfo.token}`,

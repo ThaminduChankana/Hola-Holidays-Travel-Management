@@ -4,11 +4,16 @@ const generateToken = require("../utils/generateToken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 
-const SESSIONS = new Map();
+const CUSTOMER_SESSIONS = new Map();
 
 // register  customer profile
 const registerCustomer = asyncHandler(async (req, res) => {
 	const { firstName, lastName, telephone, address, gender, country, email, password, pic } = req.body;
+	const user = CUSTOMER_SESSIONS.get(req.cookies.sessionId);
+	if (user == null) {
+		res.sendStatus(401);
+		return;
+	}
 
 	const customerExists = await Customer.findOne({ email });
 	if (customerExists) {
@@ -71,7 +76,7 @@ const authCustomer = asyncHandler(async (req, res) => {
 		throw new Error("Invalid Email or Password");
 	} else {
 		const sessionId = crypto.randomUUID();
-		SESSIONS.set(sessionId, customer._id);
+		CUSTOMER_SESSIONS.set(sessionId, customer._id);
 		const expirationDate = new Date();
 		expirationDate.setDate(expirationDate.getDate() + 2);
 
@@ -131,6 +136,11 @@ const getCustomerProfileById = asyncHandler(async (req, res) => {
 //update customer profile by customer
 const updateCustomerProfile = asyncHandler(async (req, res) => {
 	const customer = await Customer.findById(req.customer._id);
+	const user = CUSTOMER_SESSIONS.get(req.cookies.sessionId);
+	if (user == null) {
+		res.sendStatus(401);
+		return;
+	}
 
 	if (customer) {
 		customer.firstName = req.body.firstName || customer.firstName;
@@ -208,6 +218,12 @@ const updateCustomerProfileById = asyncHandler(async (req, res) => {
 const deleteCustomerProfile = asyncHandler(async (req, res) => {
 	const customer = await Customer.findById(req.customer._id);
 
+	const user = CUSTOMER_.get(req.cookies.sessionId);
+	if (user == null) {
+		res.sendStatus(401);
+		return;
+	}
+
 	if (customer) {
 		await customer.deleteOne();
 		res.json({ message: "Customer Removed !" });
@@ -231,6 +247,7 @@ const deleteCustomerProfileById = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+	CUSTOMER_SESSIONS,
 	registerCustomer,
 	authCustomer,
 	getCustomers,

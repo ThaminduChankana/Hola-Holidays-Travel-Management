@@ -93,6 +93,7 @@ export const customerRegister =
 			dispatch({ type: CUSTOMER_REGISTER_REQUEST });
 
 			const config = {
+				withCredentials: true,
 				headers: {
 					"Content-type": "application/json",
 				},
@@ -172,6 +173,7 @@ export const customerUpdateProfile = (customer) => async (dispatch, getState) =>
 		} = getState();
 
 		const config = {
+			withCredentials: true,
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${customerInfo.token}`,
@@ -211,6 +213,7 @@ export const customerDeleteProfile = () => async (dispatch, getState) => {
 		} = getState();
 		console.log(customerInfo);
 		const config = {
+			withCredentials: true,
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${customerInfo.token}`,
@@ -329,6 +332,7 @@ export const customerUpdateProfileById =
 			} = getState();
 
 			const config = {
+				withCredentials: true,
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${adminInfo.token}`,
@@ -385,6 +389,7 @@ export const customerDeleteProfileById = (id) => async (dispatch, getState) => {
 		} = getState();
 
 		const config = {
+			withCredentials: true,
 			headers: {
 				Authorization: `Bearer ${adminInfo.token}`,
 			},

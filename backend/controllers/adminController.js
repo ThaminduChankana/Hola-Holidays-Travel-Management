@@ -3,7 +3,7 @@ const Admin = require("../models/adminModel");
 const generateToken = require("../utils/generateToken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
-const SESSIONS = new Map();
+const ADMIN_SESSIONS = new Map();
 
 // register user as a admin
 const registerAdmin = asyncHandler(async (req, res) => {
@@ -13,6 +13,12 @@ const registerAdmin = asyncHandler(async (req, res) => {
 	if (adminExists) {
 		res.status(400);
 		throw new Error("Admin Profile Exists !");
+	}
+
+	const user = ADMIN_SESSIONS.get(req.cookies.sessionId);
+	if (user == null) {
+		res.sendStatus(401);
+		return;
 	}
 
 	const admin = new Admin({
@@ -65,7 +71,7 @@ const authAdmin = asyncHandler(async (req, res) => {
 		throw new Error("Invalid Email or Password");
 	} else {
 		const sessionId = crypto.randomUUID();
-		SESSIONS.set(sessionId, admin._id);
+		ADMIN_SESSIONS.set(sessionId, admin._id);
 		const expirationDate = new Date();
 		expirationDate.setDate(expirationDate.getDate() + 2);
 
@@ -104,6 +110,12 @@ const getAdminProfile = asyncHandler(async (req, res) => {
 const updateAdminProfile = asyncHandler(async (req, res) => {
 	const admin = await Admin.findById(req.admin._id);
 
+	const user = ADMIN_SESSIONS.get(req.cookies.sessionId);
+	if (user == null) {
+		res.sendStatus(401);
+		return;
+	}
+
 	if (admin) {
 		admin.name = req.body.name || admin.name;
 		admin.telephone = req.body.telephone || admin.telephone;
@@ -132,4 +144,4 @@ const updateAdminProfile = asyncHandler(async (req, res) => {
 	}
 });
 
-module.exports = { registerAdmin, authAdmin, getAdminProfile, updateAdminProfile };
+module.exports = { ADMIN_SESSIONS, registerAdmin, authAdmin, getAdminProfile, updateAdminProfile };
