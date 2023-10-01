@@ -2,6 +2,8 @@ const asyncHandler = require("express-async-handler");
 const Admin = require("../models/adminModel");
 const generateToken = require("../utils/generateToken");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
+const SESSIONS = new Map();
 
 // register user as a admin
 const registerAdmin = asyncHandler(async (req, res) => {
@@ -62,6 +64,17 @@ const authAdmin = asyncHandler(async (req, res) => {
 		res.status(400);
 		throw new Error("Invalid Email or Password");
 	} else {
+		const sessionId = crypto.randomUUID();
+		SESSIONS.set(sessionId, admin._id);
+		const expirationDate = new Date();
+		expirationDate.setDate(expirationDate.getDate() + 2);
+
+		//Set the cookie
+		res.cookie("sessionId", sessionId, {
+			httpOnly: false,
+			withCredentials: true,
+			expires: expirationDate,
+		});
 		res.status(201).json({
 			_id: admin._id,
 			name: admin.name,

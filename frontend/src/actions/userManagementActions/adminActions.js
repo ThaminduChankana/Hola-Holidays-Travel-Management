@@ -23,6 +23,7 @@ export const adminLogin = (email, password) => async (dispatch) => {
 		dispatch({ type: ADMIN_LOGIN_REQUEST });
 
 		const config = {
+			withCredentials: true,
 			headers: {
 				"Content-type": "application/json",
 			},
