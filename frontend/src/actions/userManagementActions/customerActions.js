@@ -32,6 +32,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { API_ENDPOINT } from "../../config";
 
+let csrfToken;
 // customer loggin action
 export const customerLogin = (email, password) => async (dispatch) => {
 	try {
@@ -61,6 +62,7 @@ export const customerLogin = (email, password) => async (dispatch) => {
 		});
 
 		localStorage.setItem("customerInfo", JSON.stringify(data));
+		csrfToken = data.csrfToken;
 	} catch (error) {
 		dispatch({
 			type: CUSTOMER_LOGIN_FAIL,
@@ -180,8 +182,10 @@ export const customerUpdateProfile = (customer) => async (dispatch, getState) =>
 			},
 		};
 
+		const requestBody = JSON.stringify({ csrfToken, ...customer });
+
 		//call the backend route
-		const { data } = await axios.put(`${API_ENDPOINT}/user/customer/edit`, customer, config);
+		const { data } = await axios.put(`${API_ENDPOINT}/user/customer/edit`, requestBody, config);
 
 		dispatch({ type: CUSTOMER_UPDATE_SUCCESS, payload: data });
 		Swal.fire({

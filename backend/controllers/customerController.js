@@ -76,7 +76,9 @@ const authCustomer = asyncHandler(async (req, res) => {
 		throw new Error("Invalid Email or Password");
 	} else {
 		const sessionId = crypto.randomUUID();
-		CUSTOMER_SESSIONS.set(sessionId, customer._id);
+		const csrfToken = crypto.randomUUID();
+		const id = customer._id;
+		CUSTOMER_SESSIONS.set(sessionId, { id, csrfToken });
 		const expirationDate = new Date();
 		expirationDate.setDate(expirationDate.getDate() + 2);
 
@@ -99,6 +101,7 @@ const authCustomer = asyncHandler(async (req, res) => {
 			pic: customer.pic,
 			regDate: customer.regDate,
 			token: generateToken(customer._id),
+			csrfToken,
 		});
 	}
 });
@@ -137,7 +140,8 @@ const getCustomerProfileById = asyncHandler(async (req, res) => {
 const updateCustomerProfile = asyncHandler(async (req, res) => {
 	const customer = await Customer.findById(req.customer._id);
 	const user = CUSTOMER_SESSIONS.get(req.cookies.sessionId);
-	if (user == null) {
+	console.log("from backend csrf - " + req.body.csrfToken);
+	if (user == null || user.csrfToken !== req.body.csrfToken) {
 		res.sendStatus(401);
 		return;
 	}
