@@ -140,7 +140,6 @@ const getCustomerProfileById = asyncHandler(async (req, res) => {
 const updateCustomerProfile = asyncHandler(async (req, res) => {
 	const customer = await Customer.findById(req.customer._id);
 	const user = CUSTOMER_SESSIONS.get(req.cookies.sessionId);
-	console.log("from backend csrf - " + req.body.csrfToken);
 	if (user == null || user.csrfToken !== req.body.csrfToken) {
 		res.sendStatus(401);
 		return;
