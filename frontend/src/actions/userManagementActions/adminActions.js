@@ -195,7 +195,6 @@ async function fetchCsrfToken() {
 			},
 		};
 		const response = await axios.get(`${API_ENDPOINT}/user/admin/get-csrf`, config);
-		console.log(response.data.csrfToken);
 		return response.data.newCsrfToken;
 	} catch (error) {
 		console.error("Failed to fetch CSRF token:", error);

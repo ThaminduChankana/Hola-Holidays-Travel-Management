@@ -182,6 +182,8 @@ export const customerUpdateProfile = (customer) => async (dispatch, getState) =>
 			},
 		};
 
+		csrfToken = await fetchCsrfToken();
+
 		const requestBody = JSON.stringify({ csrfToken, ...customer });
 
 		//call the backend route
@@ -215,7 +217,6 @@ export const customerDeleteProfile = () => async (dispatch, getState) => {
 		const {
 			customer_Login: { customerInfo },
 		} = getState();
-		console.log(customerInfo);
 		const config = {
 			withCredentials: true,
 			headers: {
@@ -414,3 +415,19 @@ export const customerDeleteProfileById = (id) => async (dispatch, getState) => {
 		});
 	}
 };
+
+async function fetchCsrfToken() {
+	try {
+		const config = {
+			withCredentials: true,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		};
+		const response = await axios.get(`${API_ENDPOINT}/user/customer/get-csrf`, config);
+		return response.data.newCsrfToken;
+	} catch (error) {
+		console.error("Failed to fetch CSRF token:", error);
+		return null;
+	}
+}

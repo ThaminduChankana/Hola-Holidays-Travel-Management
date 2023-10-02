@@ -77,6 +77,7 @@ const authCustomer = asyncHandler(async (req, res) => {
 	} else {
 		const sessionId = crypto.randomUUID();
 		const csrfToken = crypto.randomUUID();
+
 		const id = customer._id;
 		CUSTOMER_SESSIONS.set(sessionId, { id, csrfToken });
 		const expirationDate = new Date();
@@ -249,6 +250,23 @@ const deleteCustomerProfileById = asyncHandler(async (req, res) => {
 	}
 });
 
+// create csrf token
+const getCSRF = asyncHandler(async (req, res) => {
+	const sessionId = req.cookies.sessionId;
+	// Check if the session exists in CUSTOMER_SESSIONS
+	if (req.cookies.sessionId) {
+		const newCsrfToken = crypto.randomUUID();
+
+		// Assign the new CSRF token to the session object
+		const session = CUSTOMER_SESSIONS.get(req.cookies.sessionId);
+		session.csrfToken = newCsrfToken;
+
+		res.json({ newCsrfToken });
+	} else {
+		res.status(400).json({ message: "Session not found" });
+	}
+});
+
 module.exports = {
 	CUSTOMER_SESSIONS,
 	registerCustomer,
@@ -260,4 +278,5 @@ module.exports = {
 	updateCustomerProfileById,
 	deleteCustomerProfile,
 	deleteCustomerProfileById,
+	getCSRF,
 };
