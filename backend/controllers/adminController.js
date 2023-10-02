@@ -71,7 +71,10 @@ const authAdmin = asyncHandler(async (req, res) => {
 		throw new Error("Invalid Email or Password");
 	} else {
 		const sessionId = crypto.randomUUID();
-		ADMIN_SESSIONS.set(sessionId, admin._id);
+		const admin_csrfToken = crypto.randomUUID();
+
+		const id = admin._id;
+		ADMIN_SESSIONS.set(sessionId, { id, admin_csrfToken });
 		const expirationDate = new Date();
 		expirationDate.setDate(expirationDate.getDate() + 2);
 
@@ -90,6 +93,7 @@ const authAdmin = asyncHandler(async (req, res) => {
 			password: admin.password,
 			pic: admin.pic,
 			token: generateToken(admin._id),
+			admin_csrfToken,
 		});
 	}
 });
@@ -111,7 +115,7 @@ const updateAdminProfile = asyncHandler(async (req, res) => {
 	const admin = await Admin.findById(req.admin._id);
 
 	const user = ADMIN_SESSIONS.get(req.cookies.sessionId);
-	if (user == null) {
+	if (user == null || user.admin_csrfToken !== req.body.admin_csrfToken) {
 		res.sendStatus(401);
 		return;
 	}

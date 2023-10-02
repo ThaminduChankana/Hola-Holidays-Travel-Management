@@ -52,7 +52,7 @@ app.use(
 	})
 );
 
-// fix missing anti-clickjacking header
+// fixed missing anti-clickjacking header
 app.use((req, res, next) => {
 	res.setHeader("Content-Security-Policy", "frame-ancestors 'self'");
 	res.setHeader("X-Frame-Options", "DENY");

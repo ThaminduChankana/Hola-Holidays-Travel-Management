@@ -17,6 +17,8 @@ import axios from "axios";
 import swal from "sweetalert";
 import { API_ENDPOINT } from "../../config";
 
+let admin_csrfToken;
+
 // admin loggin action
 export const adminLogin = (email, password) => async (dispatch) => {
 	try {
@@ -41,6 +43,7 @@ export const adminLogin = (email, password) => async (dispatch) => {
 		});
 
 		localStorage.setItem("adminInfo", JSON.stringify(data));
+		admin_csrfToken = data.admin_csrfToken;
 	} catch (error) {
 		dispatch({
 			type: ADMIN_LOGIN_FAIL,
@@ -155,7 +158,9 @@ export const adminUpdateProfile = (admin) => async (dispatch, getState) => {
 			},
 		};
 
-		const { data } = await axios.put(`${API_ENDPOINT}/user/admin/edit`, admin, config);
+		const requestBody = JSON.stringify({ admin_csrfToken, ...admin });
+
+		const { data } = await axios.put(`${API_ENDPOINT}/user/admin/edit`, requestBody, config);
 
 		dispatch({ type: ADMIN_UPDATE_SUCCESS, payload: data });
 		swal({
