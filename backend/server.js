@@ -61,6 +61,25 @@ app.use((req, res, next) => {
 
 app.use(cookieParser());
 
+// fixed ssrf vulnerability issue
+function isURLValid(url) {
+	const allowedPrefix = "https://localhost:5001/";
+
+	return url.startsWith(allowedPrefix);
+}
+
+app.use((req, res, next) => {
+	const url = req.query.url;
+	if (url && url.trim() !== "") {
+		if (!isURLValid(url)) {
+			res.status(400).send("Invalid URL.");
+			return;
+		}
+	}
+
+	next();
+});
+
 // app.use(passport.initialize());
 // app.use(passport.session());
 // app.use(
