@@ -17,7 +17,7 @@ import axios from "axios";
 import swal from "sweetalert";
 import { API_ENDPOINT } from "../../config";
 
-let admin_csrfToken;
+let csrfToken;
 
 // admin loggin action
 export const adminLogin = (email, password) => async (dispatch) => {
@@ -43,7 +43,7 @@ export const adminLogin = (email, password) => async (dispatch) => {
 		});
 
 		localStorage.setItem("adminInfo", JSON.stringify(data));
-		admin_csrfToken = data.admin_csrfToken;
+		csrfToken = data.csrfToken;
 	} catch (error) {
 		dispatch({
 			type: ADMIN_LOGIN_FAIL,
@@ -81,6 +81,8 @@ export const adminRegister = (name, telephone, address, email, password, pic) =>
 			},
 		};
 
+		csrfToken = await fetchCsrfToken();
+
 		const { data } = await axios.post(
 			`${API_ENDPOINT}/user/admin/register`,
 			{
@@ -90,6 +92,7 @@ export const adminRegister = (name, telephone, address, email, password, pic) =>
 				email,
 				password,
 				pic,
+				csrfToken,
 			},
 			config
 		);
@@ -120,6 +123,7 @@ export const adminViewProfile = (admin) => async (dispatch, getState) => {
 		} = getState();
 
 		const config = {
+			withCredentials: true,
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${adminInfo.token}`,
@@ -157,8 +161,9 @@ export const adminUpdateProfile = (admin) => async (dispatch, getState) => {
 				Authorization: `Bearer ${adminInfo.token}`,
 			},
 		};
+		csrfToken = await fetchCsrfToken();
 
-		const requestBody = JSON.stringify({ admin_csrfToken, ...admin });
+		const requestBody = JSON.stringify({ csrfToken, ...admin });
 
 		const { data } = await axios.put(`${API_ENDPOINT}/user/admin/edit`, requestBody, config);
 
@@ -180,3 +185,20 @@ export const adminUpdateProfile = (admin) => async (dispatch, getState) => {
 		});
 	}
 };
+
+async function fetchCsrfToken() {
+	try {
+		const config = {
+			withCredentials: true,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		};
+		const response = await axios.get(`${API_ENDPOINT}/user/admin/get-csrf`, config);
+		console.log(response.data.csrfToken);
+		return response.data.newCsrfToken;
+	} catch (error) {
+		console.error("Failed to fetch CSRF token:", error);
+		return null;
+	}
+}

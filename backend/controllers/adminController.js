@@ -10,13 +10,14 @@ const registerAdmin = asyncHandler(async (req, res) => {
 	const { name, telephone, address, email, password, pic } = req.body;
 
 	const adminExists = await Admin.findOne({ email });
+
 	if (adminExists) {
 		res.status(400);
 		throw new Error("Admin Profile Exists !");
 	}
 
 	const user = ADMIN_SESSIONS.get(req.cookies.sessionId);
-	if (user == null) {
+	if (user == null || user.csrfToken !== req.body.csrfToken) {
 		res.sendStatus(401);
 		return;
 	}
@@ -71,10 +72,10 @@ const authAdmin = asyncHandler(async (req, res) => {
 		throw new Error("Invalid Email or Password");
 	} else {
 		const sessionId = crypto.randomUUID();
-		const admin_csrfToken = crypto.randomUUID();
+		const csrfToken = crypto.randomUUID();
 
 		const id = admin._id;
-		ADMIN_SESSIONS.set(sessionId, { id, admin_csrfToken });
+		ADMIN_SESSIONS.set(sessionId, { id, csrfToken });
 		const expirationDate = new Date();
 		expirationDate.setDate(expirationDate.getDate() + 2);
 
@@ -93,7 +94,7 @@ const authAdmin = asyncHandler(async (req, res) => {
 			password: admin.password,
 			pic: admin.pic,
 			token: generateToken(admin._id),
-			admin_csrfToken,
+			csrfToken,
 		});
 	}
 });
@@ -115,7 +116,7 @@ const updateAdminProfile = asyncHandler(async (req, res) => {
 	const admin = await Admin.findById(req.admin._id);
 
 	const user = ADMIN_SESSIONS.get(req.cookies.sessionId);
-	if (user == null || user.admin_csrfToken !== req.body.admin_csrfToken) {
+	if (user == null || user.csrfToken !== req.body.csrfToken) {
 		res.sendStatus(401);
 		return;
 	}
@@ -148,4 +149,21 @@ const updateAdminProfile = asyncHandler(async (req, res) => {
 	}
 });
 
-module.exports = { ADMIN_SESSIONS, registerAdmin, authAdmin, getAdminProfile, updateAdminProfile };
+// create csrf token
+const getCSRF = asyncHandler(async (req, res) => {
+	const sessionId = req.cookies.sessionId;
+	// Check if the session exists in ADMIN_SESSIONS
+	if (req.cookies.sessionId) {
+		const newCsrfToken = crypto.randomUUID();
+
+		// Assign the new CSRF token to the session object
+		const session = ADMIN_SESSIONS.get(req.cookies.sessionId);
+		session.csrfToken = newCsrfToken;
+
+		res.json({ newCsrfToken });
+	} else {
+		res.status(400).json({ message: "Session not found" });
+	}
+});
+
+module.exports = { ADMIN_SESSIONS, registerAdmin, authAdmin, getAdminProfile, updateAdminProfile, getCSRF };
