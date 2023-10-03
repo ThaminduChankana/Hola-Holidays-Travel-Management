@@ -23,12 +23,12 @@ dotenv.config();
 connectDB();
 app.use(express.json());
 
-// Fixed Cross-domain miss-configuration of the backend
-// const corsOptions = {
-//   origin: ["http://localhost:3000"],
-//   methods: 'GET,HEAD,PUT,POST,DELETE',
-//   allowedHeaders: 'Content-Type,Authorization',
-// };
+//Fixed Cross-domain miss-configuration of the backend
+const corsOptions = {
+  origin: ["http://localhost:3000"],
+  methods: 'GET,HEAD,PUT,POST,DELETE',
+  allowedHeaders: 'Content-Type,Authorization',
+};
 
 app.use("*", cors());
 
@@ -66,7 +66,7 @@ app.get(
 app.get(
 	"/auth/google/callback",
 	passport.authenticate("google", {
-		successRedirect: "http://localhost:5001/auth", // Redirect to the homepage after successful authentication
+		successRedirect: "http://localhost:3000/loading", // Redirect to the homepage after successful authentication
 		failureRedirect: "http://localhost:3000/customer-login", // Redirect to login page if authentication fails
 	})
 );
