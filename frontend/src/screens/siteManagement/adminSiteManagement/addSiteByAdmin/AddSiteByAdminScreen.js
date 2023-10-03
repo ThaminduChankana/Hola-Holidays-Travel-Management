@@ -9,6 +9,8 @@ import "./addSite.css";
 import { Link, useHistory } from "react-router-dom/cjs/react-router-dom";
 import { SITES_CREATE_AFTER_SUCCESS } from "../../../../constants/siteManagementConstants/siteConstants";
 
+import DOMPurify from "dompurify";
+
 function AddSiteByAdminScreen() {
 	const [siteName, setSiteName] = useState("");
 	const [country, setCountry] = useState("");
@@ -25,6 +27,18 @@ function AddSiteByAdminScreen() {
 	const [moreInfoURL, setMoreInfoURL] = useState("");
 	const [message] = useState(null);
 	const [picMessage, setPicMessage] = useState(null);
+
+	const sanitizedSiteName = DOMPurify.sanitize(siteName);
+	const sanitizedCountry = DOMPurify.sanitize(country);
+	const sanitizedProvince = DOMPurify.sanitize(province);
+	const sanitizedSiteLocation = DOMPurify.sanitize(siteLocation);
+	const sanitizedDescription = DOMPurify.sanitize(description);
+	const sanitizedPostalCode = DOMPurify.sanitize(postalCode);
+	const sanitizedRecommendations = DOMPurify.sanitize(recommendations);
+	const sanitizedSpecialEvents = DOMPurify.sanitize(specialEvents);
+	const sanitizedSpecialInstructions = DOMPurify.sanitize(specialInstructions);
+	const sanitizedMoreInfoURL = DOMPurify.sanitize(moreInfoURL);
+	//const sanitizedMessage = DOMPurify.sanitize(message);
 
 	const dispatch = useDispatch();
 
@@ -78,32 +92,32 @@ function AddSiteByAdminScreen() {
 		e.preventDefault();
 
 		if (
-			!siteName ||
-			!country ||
-			!province ||
-			!siteLocation ||
-			!postalCode ||
+			!sanitizedSiteName ||
+			!sanitizedCountry ||
+			!sanitizedPostalCode ||
+			!sanitizedSiteLocation ||
+			!sanitizedProvince ||
 			!picURL ||
-			!description ||
-			!recommendations ||
-			!specialEvents ||
-			!specialInstructions ||
-			!moreInfoURL
+			!sanitizedDescription ||
+			!sanitizedRecommendations ||
+			!sanitizedSpecialEvents ||
+			!sanitizedSpecialInstructions ||
+			!sanitizedMoreInfoURL
 		)
 			return;
 		dispatch(
 			await createSite(
-				siteName,
-				country,
-				province,
-				siteLocation,
-				postalCode,
+				sanitizedSiteName,
+				sanitizedCountry,
+				sanitizedProvince,
+				sanitizedSiteLocation,
+				sanitizedPostalCode,
 				picURL,
-				description,
-				recommendations,
-				specialEvents,
-				specialInstructions,
-				moreInfoURL
+				sanitizedDescription,
+				sanitizedRecommendations,
+				sanitizedSpecialEvents,
+				sanitizedSpecialInstructions,
+				sanitizedMoreInfoURL
 			)
 		);
 		await dispatch({ type: SITES_CREATE_AFTER_SUCCESS, payload: null });
@@ -191,7 +205,7 @@ function AddSiteByAdminScreen() {
 											<Form.Control
 												type="text"
 												placeholder="Enter Site Name"
-												value={siteName}
+												value={sanitizedSiteName}
 												onChange={(e) => setSiteName(e.target.value)}
 												required
 											/>
@@ -201,7 +215,7 @@ function AddSiteByAdminScreen() {
 											<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Located Country</Form.Label>
 											<Form.Control
 												type="text"
-												value={country}
+												value={sanitizedCountry}
 												placeholder="Enter Located Country"
 												onChange={(e) => setCountry(e.target.value)}
 												required
@@ -212,7 +226,7 @@ function AddSiteByAdminScreen() {
 											<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Province or State</Form.Label>
 											<Form.Control
 												type="text"
-												value={province}
+												value={sanitizedProvince}
 												placeholder="Enter located province or state"
 												onChange={(e) => setProvince(e.target.value)}
 												required
@@ -223,7 +237,7 @@ function AddSiteByAdminScreen() {
 											<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Site Located City</Form.Label>
 											<Form.Control
 												type="text"
-												value={siteLocation}
+												value={sanitizedSiteLocation}
 												placeholder="Enter Site Location"
 												onChange={(e) => setSiteLocation(e.target.value)}
 												required
@@ -234,7 +248,7 @@ function AddSiteByAdminScreen() {
 											<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Site Code</Form.Label>
 											<Form.Control
 												type="text"
-												value={postalCode}
+												value={sanitizedPostalCode}
 												placeholder="Enter Postal Code"
 												onChange={(e) => setPostalCode(e.target.value)}
 												required
@@ -249,7 +263,7 @@ function AddSiteByAdminScreen() {
 													fontSize: "16px",
 													borderRadius: "5px",
 												}}
-												value={description}
+												value={sanitizedDescription}
 												placeholder="Enter Site Description"
 												onChange={(e) => setDescription(e.target.value)}
 												required
@@ -265,7 +279,7 @@ function AddSiteByAdminScreen() {
 													fontSize: "16px",
 													borderRadius: "5px",
 												}}
-												value={recommendations}
+												value={sanitizedRecommendations}
 												placeholder="Enter Recommendations"
 												onChange={(e) => setRecommendations(e.target.value)}
 												required
@@ -281,7 +295,7 @@ function AddSiteByAdminScreen() {
 													fontSize: "16px",
 													borderRadius: "5px",
 												}}
-												value={specialEvents}
+												value={sanitizedSpecialEvents}
 												placeholder="Enter Special Events"
 												onChange={(e) => setSpecialEvents(e.target.value)}
 												required
@@ -297,7 +311,7 @@ function AddSiteByAdminScreen() {
 													fontSize: "16px",
 													borderRadius: "5px",
 												}}
-												value={specialInstructions}
+												value={sanitizedSpecialInstructions}
 												placeholder="Enter Special Instructions"
 												onChange={(e) => setSpecialInstructions(e.target.value)}
 												required
@@ -309,7 +323,7 @@ function AddSiteByAdminScreen() {
 											<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>More Info</Form.Label>
 											<Form.Control
 												type="text"
-												value={moreInfoURL}
+												value={sanitizedMoreInfoURL}
 												placeholder="Enter More Info URL"
 												onChange={(e) => setMoreInfoURL(e.target.value)}
 												required

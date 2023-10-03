@@ -9,6 +9,8 @@ import { Link, useHistory } from "react-router-dom/cjs/react-router-dom";
 import { ADMIN_REGISTER_AFTER_SUCCESS } from "../../../constants/userManagementConstants/adminConstants";
 import "./RegisterScreen.css";
 
+import DOMPurify from "dompurify";
+
 function AdminRegisterScreen() {
 	const [name, setName] = useState("");
 	const [telephone, setTelephone] = useState("");
@@ -19,6 +21,13 @@ function AdminRegisterScreen() {
 	const [confirmpassword, setConfirmPassword] = useState("");
 	const [message, setMessage] = useState(null);
 	const [picMessage, setPicMessage] = useState(null);
+
+	const sanitizedName = DOMPurify.sanitize(name);
+	const sanitizedAddress = DOMPurify.sanitize(address);
+	const sanitizedTelephone = DOMPurify.sanitize(telephone);
+	const sanitizedEmail = DOMPurify.sanitize(email);
+	const sanitizedPassword = DOMPurify.sanitize(password);
+	const sanitizedConfirmPassword = DOMPurify.sanitize(confirmpassword);
 
 	const dispatch = useDispatch();
 
@@ -51,11 +60,14 @@ function AdminRegisterScreen() {
 	const submitHandler = async (e) => {
 		e.preventDefault();
 
-		if (!name || !telephone || !address || !email || !password || !pic) return;
-		if (password !== confirmpassword) {
+		if (!sanitizedName || !sanitizedTelephone || !sanitizedAddress || !sanitizedEmail || !sanitizedEmail || !pic)
+			return;
+		if (sanitizedPassword !== sanitizedConfirmPassword) {
 			setMessage("Passwords do not match");
 		} else {
-			dispatch(await adminRegister(name, telephone, address, email, password, pic));
+			dispatch(
+				await adminRegister(sanitizedName, sanitizedTelephone, sanitizedAddress, sanitizedEmail, sanitizedPassword, pic)
+			);
 			await dispatch({ type: ADMIN_REGISTER_AFTER_SUCCESS, payload: null });
 			resetHandler();
 		}
@@ -137,7 +149,7 @@ function AdminRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Name</Form.Label>
 										<Form.Control
 											type="name"
-											value={name}
+											value={sanitizedName}
 											placeholder="Enter your name"
 											onChange={(e) => setName(e.target.value)}
 											required
@@ -148,7 +160,7 @@ function AdminRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Telephone</Form.Label>
 										<Form.Control
 											type="text"
-											value={telephone}
+											value={sanitizedTelephone}
 											placeholder="Enter Telephone Number With Country Code"
 											onChange={(e) => setTelephone(e.target.value)}
 											required
@@ -165,7 +177,7 @@ function AdminRegisterScreen() {
 												padding: "5px",
 												border: "none",
 											}}
-											value={address}
+											value={sanitizedAddress}
 											onChange={(e) => setAddress(e.target.value)}
 											placeholder="Enter your address"
 											required
@@ -177,7 +189,7 @@ function AdminRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Email</Form.Label>
 										<Form.Control
 											type="email"
-											value={email}
+											value={sanitizedEmail}
 											placeholder="Enter  your email address"
 											onChange={(e) => setEmail(e.target.value)}
 											required
@@ -188,7 +200,7 @@ function AdminRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Password</Form.Label>
 										<Form.Control
 											type="password"
-											value={password}
+											value={sanitizedPassword}
 											placeholder="Password"
 											onChange={(e) => setPassword(e.target.value)}
 											required
@@ -199,7 +211,7 @@ function AdminRegisterScreen() {
 										<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Confirm Password</Form.Label>
 										<Form.Control
 											type="password"
-											value={confirmpassword}
+											value={sanitizedConfirmPassword}
 											placeholder="Confirm Password"
 											onChange={(e) => setConfirmPassword(e.target.value)}
 											required

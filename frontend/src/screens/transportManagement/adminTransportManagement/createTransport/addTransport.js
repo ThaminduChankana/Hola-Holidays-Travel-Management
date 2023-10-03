@@ -8,6 +8,8 @@ import ErrorMessage from "../../../../components/ErrorMessage";
 import { createTransport } from "../../../../actions/transportManagementActions/transportActions";
 import "./addTransport.css";
 
+import DOMPurify from "dompurify";
+
 function AddTransport() {
 	const [licensePlate, setLicensePlate] = useState("");
 	const [startingStation, setStartingStation] = useState("");
@@ -19,6 +21,17 @@ function AddTransport() {
 	const [cityStops, setCityStops] = useState("");
 	const [mobileNo, setMobileNo] = useState("");
 	const [leavingTime, setLeavingTime] = useState("");
+
+	const sanitizedLicensePlate = DOMPurify.sanitize(licensePlate);
+	const sanitizedStartingStation = DOMPurify.sanitize(startingStation);
+	const sanitizedDestinationStation = DOMPurify.sanitize(destinationStation);
+	const sanitizedTotalTravelTime = DOMPurify.sanitize(totalTravelTime);
+	const sanitizedTotalNumberOfSeats = DOMPurify.sanitize(totalNumberOfSeats);
+	const sanitizedTicketPrice = DOMPurify.sanitize(ticketPrice);
+	const sanitizedFacilities = DOMPurify.sanitize(facilities);
+	const sanitizedCityStops = DOMPurify.sanitize(cityStops);
+	const sanitizedMobileNo = DOMPurify.sanitize(mobileNo);
+	const sanitizedLeavingTime = DOMPurify.sanitize(leavingTime);
 
 	const [message] = useState(null);
 
@@ -61,30 +74,30 @@ function AddTransport() {
 		e.preventDefault();
 
 		if (
-			!licensePlate ||
-			!startingStation ||
-			!destinationStation ||
-			!totalTravelTime ||
-			!totalNumberOfSeats ||
-			!ticketPrice ||
-			!facilities ||
-			!cityStops ||
-			!mobileNo ||
-			!leavingTime
+			!sanitizedLicensePlate ||
+			!sanitizedStartingStation ||
+			!sanitizedDestinationStation ||
+			!sanitizedTotalTravelTime ||
+			!sanitizedTotalNumberOfSeats ||
+			!sanitizedTicketPrice ||
+			!sanitizedFacilities ||
+			!sanitizedCityStops ||
+			!sanitizedMobileNo ||
+			!sanitizedLeavingTime
 		)
 			return;
 		dispatch(
 			createTransport(
-				licensePlate,
-				startingStation,
-				destinationStation,
-				totalTravelTime,
-				totalNumberOfSeats,
-				ticketPrice,
-				facilities,
-				cityStops,
-				mobileNo,
-				leavingTime
+				sanitizedLicensePlate,
+				sanitizedStartingStation,
+				sanitizedDestinationStation,
+				sanitizedTotalTravelTime,
+				sanitizedTotalNumberOfSeats,
+				sanitizedTicketPrice,
+				sanitizedFacilities,
+				sanitizedCityStops,
+				sanitizedMobileNo,
+				sanitizedLeavingTime
 			)
 		);
 
@@ -156,7 +169,7 @@ function AddTransport() {
 											<Form.Control
 												type="text"
 												placeholder="Enter License Plate"
-												value={licensePlate}
+												value={sanitizedLicensePlate}
 												onChange={(e) => setLicensePlate(e.target.value)}
 												required
 											/>
@@ -166,7 +179,7 @@ function AddTransport() {
 											<Form.Label style={{ fontWeight: "bold" }}>Starting Station</Form.Label>
 											<Form.Control
 												type="text"
-												value={startingStation}
+												value={sanitizedStartingStation}
 												placeholder="Enter Starting Station"
 												onChange={(e) => setStartingStation(e.target.value)}
 												required
@@ -177,7 +190,7 @@ function AddTransport() {
 											<Form.Label style={{ fontWeight: "bold" }}>Destination Station</Form.Label>
 											<Form.Control
 												type="text"
-												value={destinationStation}
+												value={sanitizedDestinationStation}
 												placeholder="Enter Destination Station"
 												onChange={(e) => setDestinationStation(e.target.value)}
 												required
@@ -188,7 +201,7 @@ function AddTransport() {
 											<Form.Label style={{ fontWeight: "bold" }}>Total Travel Time</Form.Label>
 											<Form.Control
 												type="text"
-												value={totalTravelTime}
+												value={sanitizedTotalTravelTime}
 												placeholder="Enter Total Travel Time"
 												onChange={(e) => setTotalTravelTime(e.target.value)}
 												required
@@ -199,7 +212,7 @@ function AddTransport() {
 											<Form.Label style={{ fontWeight: "bold" }}>Total Number Of Seats</Form.Label>
 											<Form.Control
 												type="number"
-												value={totalNumberOfSeats}
+												value={sanitizedTotalNumberOfSeats}
 												placeholder="Enter Total Number Of Seats"
 												onChange={(e) => setTotalNumberOfSeats(e.target.value)}
 												required
@@ -210,7 +223,7 @@ function AddTransport() {
 											<Form.Label style={{ fontWeight: "bold" }}>Ticket Price</Form.Label>
 											<Form.Control
 												type="number"
-												value={ticketPrice}
+												value={sanitizedTicketPrice}
 												placeholder="Enter Ticket Price"
 												onChange={(e) => setTicketPrice(e.target.value)}
 												required
@@ -221,7 +234,7 @@ function AddTransport() {
 											<Form.Label style={{ fontWeight: "bold" }}>Facilities</Form.Label>
 											<Form.Control
 												type="text"
-												value={facilities}
+												value={sanitizedFacilities}
 												placeholder="Enter Facilities"
 												onChange={(e) => setFacilities(e.target.value)}
 												required
@@ -233,7 +246,7 @@ function AddTransport() {
 											<Form.Label style={{ fontWeight: "bold" }}>City Stops</Form.Label>
 											<Form.Control
 												type="text"
-												value={cityStops}
+												value={sanitizedCityStops}
 												placeholder="Enter City Stops"
 												onChange={(e) => setCityStops(e.target.value)}
 												required
@@ -245,7 +258,7 @@ function AddTransport() {
 											<Form.Label style={{ fontWeight: "bold" }}>Mobile Number</Form.Label>
 											<Form.Control
 												type="text"
-												value={mobileNo}
+												value={sanitizedMobileNo}
 												placeholder="Enter Mobile Number"
 												onChange={(e) => setMobileNo(e.target.value)}
 												required
@@ -256,7 +269,7 @@ function AddTransport() {
 											<Form.Label style={{ fontWeight: "bold" }}>Leaving Time</Form.Label>
 											<Form.Control
 												type="text"
-												value={leavingTime}
+												value={sanitizedLeavingTime}
 												placeholder="Enter Leaving Time"
 												onChange={(e) => setLeavingTime(e.target.value)}
 												required

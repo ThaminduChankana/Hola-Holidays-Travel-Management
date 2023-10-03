@@ -9,6 +9,8 @@ import "./tourguide.css";
 import { Link } from "react-router-dom/cjs/react-router-dom";
 import { TOUR_GUIDE_ADD_AFTER_SUCCESS } from "../../constants/TourGuideConstants/TourGuideConstants";
 
+import DOMPurify from "dompurify";
+
 export default function TourGuideAdd({ match }) {
 	const [name, setName] = useState("");
 	const [gender, setGender] = useState("");
@@ -17,6 +19,14 @@ export default function TourGuideAdd({ match }) {
 	const [description, setDescription] = useState("");
 	const [fee, setFee] = useState("");
 	const [phoneNumber, setPhoneNumber] = useState("");
+
+	const sanitizedName = DOMPurify.sanitize(name);
+	const sanitizedGender = DOMPurify.sanitize(gender);
+	const sanitizedLanguage = DOMPurify.sanitize(language);
+	const sanitizedLocation = DOMPurify.sanitize(location);
+	const sanitizedDescription = DOMPurify.sanitize(description);
+	const sanitizedFee = DOMPurify.sanitize(fee);
+	const sanitizedPhoneNumber = DOMPurify.sanitize(phoneNumber);
 
 	const dispatch = useDispatch();
 	const admin_Login = useSelector((state) => state.admin_Login);
@@ -36,11 +46,29 @@ export default function TourGuideAdd({ match }) {
 	};
 	const submitHandler = async (e) => {
 		e.preventDefault();
-		if (!name || !gender || !language || !location || !description || !fee || !phoneNumber)
+		if (
+			!sanitizedName ||
+			!sanitizedGender ||
+			!sanitizedLanguage ||
+			!sanitizedLocation ||
+			!sanitizedDescription ||
+			!sanitizedFee ||
+			!sanitizedPhoneNumber
+		)
 			// const sendingData = { name, gender, language, location, description, fee, phoneNumber };
 			// console.log(sendingData);
 			return;
-		dispatch(await GuideAddAction(name, gender, language, location, description, fee, phoneNumber));
+		dispatch(
+			await GuideAddAction(
+				sanitizedName,
+				sanitizedGender,
+				sanitizedLanguage,
+				sanitizedLocation,
+				sanitizedDescription,
+				sanitizedFee,
+				sanitizedPhoneNumber
+			)
+		);
 		await dispatch({ TOUR_GUIDE_ADD_AFTER_SUCCESS, payload: null });
 		resetHandler();
 	};
@@ -111,7 +139,7 @@ export default function TourGuideAdd({ match }) {
 										}}
 										type="guidename"
 										placeholder="Enter name"
-										value={name}
+										value={sanitizedName}
 										onChange={(e) => setName(e.target.value)}
 										required
 									/>
@@ -143,25 +171,25 @@ export default function TourGuideAdd({ match }) {
 										<Form.Check
 											type="checkbox"
 											label="English"
-											checked={language === "English"}
+											checked={sanitizedLanguage === "English"}
 											onChange={() => setLanguage("English")}
 										/>
 										<Form.Check
 											type="checkbox"
 											label="Spanish"
-											checked={language === "Spanish"}
+											checked={sanitizedLanguage === "Spanish"}
 											onChange={() => setLanguage("Spanish")}
 										/>
 										<Form.Check
 											type="checkbox"
 											label="French"
-											checked={language === "French"}
+											checked={sanitizedLanguage === "French"}
 											onChange={() => setLanguage("French")}
 										/>
 										<Form.Check
 											type="checkbox"
 											label="German"
-											checked={language === "German"}
+											checked={sanitizedLanguage === "German"}
 											onChange={() => setLanguage("German")}
 										/>
 									</div>
@@ -180,7 +208,7 @@ export default function TourGuideAdd({ match }) {
 											height: 40,
 											fontSize: 15,
 										}}
-										value={location}
+										value={sanitizedLocation}
 										placeholder="enter Location"
 										onChange={(e) => setLocation(e.target.value)}
 										required
@@ -197,7 +225,7 @@ export default function TourGuideAdd({ match }) {
 										<Form.Control
 											as="textarea"
 											type="description"
-											value={description}
+											value={sanitizedDescription}
 											placeholder="enter description"
 											onChange={(e) => setDescription(e.target.value)}
 											required
@@ -238,7 +266,7 @@ export default function TourGuideAdd({ match }) {
 											fontSize: 15,
 										}}
 										type="phoneNumber"
-										value={phoneNumber}
+										value={sanitizedPhoneNumber}
 										placeholder="enter telephone"
 										onChange={(e) => setPhoneNumber(e.target.value)}
 										required
