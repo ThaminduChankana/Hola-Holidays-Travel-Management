@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Admin = require("../models/adminModel");
 const generateToken = require("../utils/generateToken");
+const sanitize = require('mongo-sanitize');
 const bcrypt = require("bcryptjs");
 
 // register user as a admin
@@ -45,35 +46,54 @@ const registerAdmin = asyncHandler(async (req, res) => {
 	}
 });
 
-// authenticate the admin
+// fixed code
 const authAdmin = asyncHandler(async (req, res) => {
 	const { email, password } = req.body;
 
-	const admin = await Admin.findOne({ email });
+	// Sanitize the email input to prevent NoSQL injection
+	const sanitizedEmail = sanitize(email);
 
-	if (!admin) {
+	// Validate that email is a valid string (you can add more validation)
+	if (typeof sanitizedEmail !== "string" || !sanitizedEmail) {
 		res.status(400);
-		throw new Error("Invalid NIC or Password");
+		throw new Error("Invalid Email");
 	}
 
-	const isMatch = await bcrypt.compare(password, admin.password);
+	try {
+		const admin = await Admin.findOne({ email: sanitizedEmail }).exec();
 
-	if (!isMatch) {
-		res.status(400);
-		throw new Error("Invalid Email or Password");
-	} else {
-		res.status(201).json({
-			_id: admin._id,
-			name: admin.name,
-			telephone: admin.telephone,
-			address: admin.address,
-			email: admin.email,
-			password: admin.password,
-			pic: admin.pic,
-			token: generateToken(admin._id),
-		});
+		if (!admin) {
+			res.status(400);
+			throw new Error("Invalid Email or Password");
+		}
+
+		// Compare the hashed password in the request body with the hashed password in the database
+		const isMatch = await bcrypt.compare(password, admin.password);
+
+		if (isMatch) {
+			res.status(201).json({
+				_id: admin._id,
+				name: admin.name,
+				telephone: admin.telephone,
+				address: admin.address,
+				email: admin.email,
+				password: admin.password,
+				pic: admin.pic,
+				token: generateToken(admin._id),
+			});
+		} else {
+			res.status(400);
+			throw new Error("Invalid Email or Password");
+		}
+	} catch (error) {
+		// Handle any other errors
+		console.error(error);
+		res.status(500).json({ message: "Internal Server Error" });
 	}
 });
+
+
+
 
 // view admin profile
 const getAdminProfile = asyncHandler(async (req, res) => {
