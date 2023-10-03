@@ -4,6 +4,7 @@ const session = require("express-session");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const app = express();
 const connectDB = require("./config/db");
 const adminRoutes = require("./routes/adminRoutes");
@@ -26,6 +27,7 @@ app.use(express.json());
 //Fixed Cross-domain miss-configuration of the backend
 const corsOptions = {
 	origin: ["http://localhost:3000"],
+	credentials: true,
 	methods: "GET,HEAD,PUT,POST,DELETE",
 	allowedHeaders: "Content-Type,Authorization",
 };
@@ -50,6 +52,48 @@ app.use(
 	})
 );
 
+// fixed missing anti-clickjacking header
+app.use((req, res, next) => {
+	res.setHeader("Content-Security-Policy", "frame-ancestors 'self'");
+	res.setHeader("X-Frame-Options", "DENY");
+	next();
+});
+
+app.use(cookieParser());
+
+// fixed ssrf vulnerability issue
+function isURLValid(url) {
+	const allowedPrefix = "https://localhost:5001/";
+
+	return url.startsWith(allowedPrefix);
+}
+
+app.use((req, res, next) => {
+	const url = req.query.url;
+	if (url && url.trim() !== "") {
+		if (!isURLValid(url)) {
+			res.status(400).send("Invalid URL.");
+			return;
+		}
+	}
+
+	next();
+});
+
+// app.use(passport.initialize());
+// app.use(passport.session());
+// app.use(
+// 	session({
+// 		secret: config.SESSION_SECRET,
+// 		resave: false,
+// 		saveUninitialized: false,
+// 		cookie: {
+// 			secure: false,
+// 			expires: new Date(Date.now() + 10000),
+// 			maxAge: 10000,
+// 		},
+// 	})
+// );
 // Initialize Passport and session management
 app.use(session({ secret: process.env.SECRET_KEY, resave: true, saveUninitialized: true }));
 app.use(passport.initialize());

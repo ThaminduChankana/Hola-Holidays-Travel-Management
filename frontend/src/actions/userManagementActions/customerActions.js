@@ -32,12 +32,14 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { API_ENDPOINT } from "../../config";
 
+let csrfToken;
 // customer loggin action
 export const customerLogin = (email, password) => async (dispatch) => {
 	try {
 		dispatch({ type: CUSTOMER_LOGIN_REQUEST });
 
 		const config = {
+			withCredentials: true,
 			headers: {
 				"Content-type": "application/json",
 			},
@@ -60,6 +62,7 @@ export const customerLogin = (email, password) => async (dispatch) => {
 		});
 
 		localStorage.setItem("customerInfo", JSON.stringify(data));
+		csrfToken = data.csrfToken;
 	} catch (error) {
 		dispatch({
 			type: CUSTOMER_LOGIN_FAIL,
@@ -92,6 +95,7 @@ export const customerRegister =
 			dispatch({ type: CUSTOMER_REGISTER_REQUEST });
 
 			const config = {
+				withCredentials: true,
 				headers: {
 					"Content-type": "application/json",
 				},
@@ -171,14 +175,19 @@ export const customerUpdateProfile = (customer) => async (dispatch, getState) =>
 		} = getState();
 
 		const config = {
+			withCredentials: true,
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${customerInfo.token}`,
 			},
 		};
 
+		csrfToken = await fetchCsrfToken();
+
+		const requestBody = JSON.stringify({ csrfToken, ...customer });
+
 		//call the backend route
-		const { data } = await axios.put(`${API_ENDPOINT}/user/customer/edit`, customer, config);
+		const { data } = await axios.put(`${API_ENDPOINT}/user/customer/edit`, requestBody, config);
 
 		dispatch({ type: CUSTOMER_UPDATE_SUCCESS, payload: data });
 		Swal.fire({
@@ -208,8 +217,8 @@ export const customerDeleteProfile = () => async (dispatch, getState) => {
 		const {
 			customer_Login: { customerInfo },
 		} = getState();
-		console.log(customerInfo);
 		const config = {
+			withCredentials: true,
 			headers: {
 				"Content-Type": "application/json",
 				Authorization: `Bearer ${customerInfo.token}`,
@@ -328,6 +337,7 @@ export const customerUpdateProfileById =
 			} = getState();
 
 			const config = {
+				withCredentials: true,
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${adminInfo.token}`,
@@ -384,6 +394,7 @@ export const customerDeleteProfileById = (id) => async (dispatch, getState) => {
 		} = getState();
 
 		const config = {
+			withCredentials: true,
 			headers: {
 				Authorization: `Bearer ${adminInfo.token}`,
 			},
@@ -404,3 +415,19 @@ export const customerDeleteProfileById = (id) => async (dispatch, getState) => {
 		});
 	}
 };
+
+async function fetchCsrfToken() {
+	try {
+		const config = {
+			withCredentials: true,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		};
+		const response = await axios.get(`${API_ENDPOINT}/user/customer/get-csrf`, config);
+		return response.data.newCsrfToken;
+	} catch (error) {
+		console.error("Failed to fetch CSRF token:", error);
+		return null;
+	}
+}

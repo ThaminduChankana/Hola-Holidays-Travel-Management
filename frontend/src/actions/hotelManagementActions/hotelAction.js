@@ -17,7 +17,10 @@ import {
 } from "../../constants/hotelManagementConstants/hotelConstant";
 import axios from "axios";
 import swal from "sweetalert";
+import { fetchCsrfToken } from "../userManagementActions/adminActions";
 import { API_ENDPOINT } from "../../config";
+
+let csrfToken;
 
 export const listHotelAdmin = () => async (dispatch, getState) => {
 	try {
@@ -81,7 +84,10 @@ export const createHotelAction =
 				admin_Login: { adminInfo },
 			} = getState();
 
+			csrfToken = await fetchCsrfToken();
+
 			const config = {
+				withCredentials: true,
 				headers: {
 					Authorization: `Bearer ${adminInfo.token}`,
 				},
@@ -98,6 +104,7 @@ export const createHotelAction =
 					facilities,
 					rules,
 					pic,
+					csrfToken,
 				},
 				config
 			);
@@ -134,7 +141,10 @@ export const updateHotelAction =
 				admin_Login: { adminInfo },
 			} = getState();
 
+			csrfToken = await fetchCsrfToken();
+
 			const config = {
+				withCredentials: true,
 				headers: {
 					Authorization: `Bearer ${adminInfo.token}`,
 				},
@@ -150,6 +160,7 @@ export const updateHotelAction =
 					facilities,
 					rules,
 					pic,
+					csrfToken,
 				},
 				config
 			);
