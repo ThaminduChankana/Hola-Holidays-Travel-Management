@@ -186,7 +186,7 @@ export const adminUpdateProfile = (admin) => async (dispatch, getState) => {
 	}
 };
 
-async function fetchCsrfToken() {
+export const fetchCsrfToken = async () => {
 	try {
 		const config = {
 			withCredentials: true,
@@ -200,4 +200,4 @@ async function fetchCsrfToken() {
 		console.error("Failed to fetch CSRF token:", error);
 		return null;
 	}
-}
+};
