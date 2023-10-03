@@ -38,7 +38,7 @@ app.get("/", (req, res) => {
 	res.send("API is Running");
 });
 
-// Fix the CSP header vulnerability
+// Fix the CSP header vulnerability -- backend
 app.use(helmet());
 
 app.use(
