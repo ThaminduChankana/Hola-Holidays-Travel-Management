@@ -4,12 +4,13 @@
 	"private": true,
 	"proxy": "http://127.0.0.1:5000",
 	"dependencies": {
-		"concurrently": "^8.2.1"
+		"concurrently": "^8.2.1",
+		"mongo-sanitize": "^1.1.0"
 	},
 	"scripts": {
-        "install-all": "run-p install-frontend install-backend",
-        "install-frontend": "cd frontend && npm install",
-        "install-backend": "cd backend && npm install",
+		"install-all": "run-p install-frontend install-backend",
+		"install-frontend": "cd frontend && npm install",
+		"install-backend": "cd backend && npm install",
 		"dev": "concurrently \"cd frontend && npm start\" \"cd backend && npm start\""
 	}
 }
