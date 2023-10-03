@@ -17,13 +17,12 @@ const CustomerLogin = ({ history }) => {
 
 	const openInNewTabAndClosePrevious = (url) => {
 		const newWindow = window.open(url, "_blank", "noopener,noreferrer");
-	  
+
 		if (newWindow) {
-		  window.close();
-		  newWindow.opener = null;
+			window.close();
+			newWindow.opener = null;
 		}
-	  };
-	  
+	};
 
 	const onClickUrl = (url) => {
 		return () => openInNewTabAndClosePrevious(url);
@@ -95,16 +94,13 @@ const CustomerLogin = ({ history }) => {
 							<Button variant="primary" type="submit">
 								Submit
 							</Button>
-							
+
 							<br></br>
-						
-						<br></br>
-							
+
+							<br></br>
 						</Form>
 						<Button onClick={onClickUrl(`${googleUrl}`)}>Google Auth</Button>
-						
 					</div>
-					
 				</Card>
 			</MainScreen>
 		</div>

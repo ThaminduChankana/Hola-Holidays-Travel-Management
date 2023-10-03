@@ -25,12 +25,12 @@ app.use(express.json());
 
 //Fixed Cross-domain miss-configuration of the backend
 const corsOptions = {
-  origin: ["http://localhost:3000"],
-  methods: 'GET,HEAD,PUT,POST,DELETE',
-  allowedHeaders: 'Content-Type,Authorization',
+	origin: ["http://localhost:3000"],
+	methods: "GET,HEAD,PUT,POST,DELETE",
+	allowedHeaders: "Content-Type,Authorization",
 };
 
-app.use("*", cors());
+app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
 	res.send("API is Running");

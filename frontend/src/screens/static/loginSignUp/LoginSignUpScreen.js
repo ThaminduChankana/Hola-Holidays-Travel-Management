@@ -44,38 +44,6 @@ const LoginSignUpScreen = ({ history }) => {
 								<br></br>
 							</Card>
 						</Col>
-						<Col>
-							<Card
-								style={{
-									borderRadius: 45,
-									borderWidth: 2.0,
-									marginTop: 20,
-									paddingInline: 10,
-									background: "rgba(231, 238, 238, 0.8)",
-								}}
-							>
-								<div className="intro-text">
-									<br></br>
-									<h1>Admin Login</h1>
-									<br></br>
-									<Link to="/admin-login">
-										<Button id="loginsignupBtn" variant="info" size="lg" style={{ width: 350, height: 75 }}>
-											Login
-										</Button>
-									</Link>
-									<br></br>
-									<br></br>
-									<Link to="/admin-register">
-										<Button id="loginsignupBtn" variant="info" size="lg" style={{ width: 350, height: 75 }}>
-											Register
-										</Button>
-									</Link>
-									<br></br>
-									<br></br>
-								</div>
-								<br></br>
-							</Card>
-						</Col>
 					</Row>
 				</div>
 			</MainScreen>
