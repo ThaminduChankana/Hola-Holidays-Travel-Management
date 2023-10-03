@@ -11,7 +11,22 @@ const CustomerLogin = ({ history }) => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
+	const googleUrl = "http://localhost:5001/auth/google";
+
 	const dispatch = useDispatch();
+
+	const openInNewTabAndClosePrevious = (url) => {
+		const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+
+		if (newWindow) {
+			window.close();
+			newWindow.opener = null;
+		}
+	};
+
+	const onClickUrl = (url) => {
+		return () => openInNewTabAndClosePrevious(url);
+	};
 
 	const customer_Login = useSelector((state) => state.customer_Login);
 	const { loading, error, customerInfo, success } = customer_Login;
@@ -32,8 +47,8 @@ const CustomerLogin = ({ history }) => {
 
 	return (
 		<div className="loginBg">
-			<br></br>
-			<br></br>
+			<br />
+			<br />
 			<MainScreen title="CUSTOMER LOGIN">
 				<Card
 					className="profileCont"
@@ -47,7 +62,7 @@ const CustomerLogin = ({ history }) => {
 						background: "rgba(231, 238, 238, 0.9)",
 					}}
 				>
-					<br></br>
+					<br />
 					<div className="loginContainer">
 						{error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
 						{loading && <Loading />}
@@ -65,7 +80,7 @@ const CustomerLogin = ({ history }) => {
 									onChange={(e) => setEmail(e.target.value)}
 								/>
 							</Form.Group>
-							<br></br>
+							<br />
 							<Form.Group controlId="formBasicPassword">
 								<Form.Label style={{ fontWeight: "bold", fontStyle: "italic" }}>Password</Form.Label>
 								<Form.Control
@@ -75,11 +90,16 @@ const CustomerLogin = ({ history }) => {
 									onChange={(e) => setPassword(e.target.value)}
 								/>
 							</Form.Group>
-							<br></br>
+							<br />
 							<Button variant="primary" type="submit">
 								Submit
 							</Button>
+
+							<br></br>
+
+							<br></br>
 						</Form>
+						<Button onClick={onClickUrl(`${googleUrl}`)}>Google Auth</Button>
 					</div>
 				</Card>
 			</MainScreen>

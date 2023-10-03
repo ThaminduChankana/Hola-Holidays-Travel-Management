@@ -1,5 +1,11 @@
 const express = require("express");
-const { registerAdmin, authAdmin, getAdminProfile, updateAdminProfile } = require("../controllers/adminController");
+const {
+	registerAdmin,
+	authAdmin,
+	getAdminProfile,
+	updateAdminProfile,
+	getCSRF,
+} = require("../controllers/adminController");
 const {
 	getCustomers,
 	updateCustomerProfileById,
@@ -22,5 +28,7 @@ router
 	.delete(protectAdmin, deleteCustomerProfileById);
 router.route("/customer/profile/edit/:_id").put(protectAdmin, updateCustomerProfileById);
 router.route("/customers").get(protectAdmin, getCustomers);
+
+router.route("/get-csrf").get(getCSRF);
 
 module.exports = router;

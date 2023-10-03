@@ -41,6 +41,7 @@ import ReservationList from "./screens/hotelManagement/reservations/ReservationL
 import HotelReservation from "./screens/hotelManagement/reservations/HotelReservation";
 import Map from "./screens/static/map/Map";
 import LoginSignUpScreen from "./screens/static/loginSignUp/LoginSignUpScreen";
+import LoadingScreen from "./screens/static/loaderScreen/LoadingScreen";
 
 function App() {
 	return (
@@ -48,6 +49,7 @@ function App() {
 			<Header />
 			<main>
 				<Route path="/map" component={Map} />
+				<Route path="/loading" component={LoadingScreen} />
 				<Route path="/access-denied" component={AccessDenied} />
 				<Route path="/login-signup" component={LoginSignUpScreen} />
 				<Route path="/admin-login" component={AdminLogin} />

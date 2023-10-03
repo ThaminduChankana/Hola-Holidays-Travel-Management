@@ -1,4 +1,5 @@
 const Hotel = require("../models/hotelModel");
+const { ADMIN_SESSIONS } = require("./adminController");
 const asyncHandler = require("express-async-handler");
 
 const gethotels = asyncHandler(async (req, res) => {
@@ -13,6 +14,12 @@ const gethotelsByCustomer = asyncHandler(async (req, res) => {
 
 const addHotel = asyncHandler(async (req, res) => {
 	const { admin, hotelName, address, location, description, facilities, rules, pic } = req.body;
+
+	const user = ADMIN_SESSIONS.get(req.cookies.sessionId);
+	if (user == null || user.csrfToken !== req.body.csrfToken) {
+		res.sendStatus(401);
+		return;
+	}
 
 	if (!admin || !hotelName || !address || !location || !description || !facilities || !rules || !pic) {
 		res.status(400);
@@ -38,6 +45,12 @@ const updateHotel = asyncHandler(async (req, res) => {
 	const { hotelName, address, location, description, facilities, rules, pic } = req.body;
 
 	const hotel = await Hotel.findById(req.params.id);
+
+	const user = ADMIN_SESSIONS.get(req.cookies.sessionId);
+	if (user == null || user.csrfToken !== req.body.csrfToken) {
+		res.sendStatus(401);
+		return;
+	}
 
 	if (hotel) {
 		hotel.hotelName = hotelName;

@@ -38,7 +38,6 @@ const AdminEditScreen = () => {
 	}, [adminInfo]);
 
 	const resetHandler = async (e) => {
-
 		setName("");
 		setTelephone("");
 		setAddress("");
